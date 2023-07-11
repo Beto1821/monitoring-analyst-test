@@ -12,7 +12,7 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
     # Create SQLite database connection
-    conn = sqlite3.connect(':memory:')
+    conn = sqlite3.connect('data.db')
     df.to_sql('data_table', conn, if_exists='replace', index=False)
 
     # Define SQL query
@@ -26,9 +26,9 @@ if uploaded_file is not None:
     conn.close()
 
     # Checkbox to show/hide lines
-    show_today = st.checkbox("Show Today")
-    show_yesterday = st.checkbox("Show Yesterday")
-    show_same_day_last_week = st.checkbox("Show Same Day Last Week")
+    show_today = st.checkbox("Show Today Sales")
+    show_yesterday = st.checkbox("Show Yesterday Sales")
+    show_same_day_last_week = st.checkbox("Show Same Day Last Week Sales")
 
     # Plot the scatter plot using Matplotlib for POS by hour
     fig1, ax1 = plt.subplots(figsize=(10, 6))
@@ -71,7 +71,7 @@ if uploaded_file is not None:
             results_df['same_day_last_week'],
             color="g",
             linestyle="--",
-            label="Same Day Last Week"
+            label="Same Day Last Week Sales"
         )
         ax1.scatter(
             results_df['time'],
@@ -93,10 +93,11 @@ if uploaded_file is not None:
     st.pyplot(fig1)
 
     # Plot the line plot using Matplotlib for AVG Sales
-    show_avg_last_week = st.checkbox("Show Avg Last Week", value=True)
-    show_avg_last_month = st.checkbox("Show Avg Last Month")
+    show_avg_last_week = st.checkbox("Show Avg Last Week Sales", value=True)
+    show_avg_last_month = st.checkbox("Show Avg Last Month Sales")
 
-    show_avg_sales = show_avg_last_week or show_avg_last_month  # Verifica se pelo menos uma checkbox está marcada
+    # Verifica se pelo menos uma checkbox está marcada
+    show_avg_sales = show_avg_last_week or show_avg_last_month  
 
     if show_avg_sales:
         fig2, ax2 = plt.subplots(figsize=(10, 6))
