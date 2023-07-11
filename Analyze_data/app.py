@@ -97,7 +97,7 @@ if uploaded_file is not None:
     show_avg_last_month = st.checkbox("Show Avg Last Month Sales")
 
     # Verifica se pelo menos uma checkbox está marcada
-    show_avg_sales = show_avg_last_week or show_avg_last_month  
+    show_avg_sales = show_avg_last_week or show_avg_last_month
 
     if show_avg_sales:
         fig2, ax2 = plt.subplots(figsize=(10, 6))
