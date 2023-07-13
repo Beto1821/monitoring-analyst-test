@@ -23,7 +23,9 @@ class Transactions1DataLoader(DataLoader):
     def load_data(self):
         df = super().load_data()
         if df['time'].dtype != 'datetime64[ns]':
-            df['time'] = pd.to_datetime(df['time'], format="%Hh %M", errors='coerce')
+            df['time'] = pd.to_datetime(
+                df['time'], format="%Hh %M", errors='coerce'
+                )
         return df
 
 
@@ -35,7 +37,9 @@ class Transactions2DataLoader(DataLoader):
     def load_data(self):
         df = super().load_data()
         if df['time'].dtype != 'datetime64[ns]':
-            df['time'] = pd.to_datetime(df['time'], format="%Hh %M", errors='coerce')
+            df['time'] = pd.to_datetime(
+                df['time'], format="%Hh %M", errors='coerce'
+                )
         return df
 
 
@@ -62,7 +66,7 @@ def plot_data(df, column_name):
     plt.ylabel('Transaction Count')
     plt.title('Real-time Transaction Data')
     plt.xticks(rotation=45)
-    plt.show()
+    st.pyplot(plt)
 
 
 def main():
