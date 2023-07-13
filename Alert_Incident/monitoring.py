@@ -17,7 +17,7 @@ class DataLoader:
 
 class Transactions1DataLoader(DataLoader):
     def __init__(self, file_path):
-        columns = ['time', 'status', 'f0_']
+        columns = ['time', 'status', 'transacoes']
         super().__init__(file_path, columns)
 
     def load_data(self):
@@ -25,7 +25,7 @@ class Transactions1DataLoader(DataLoader):
         if df['time'].dtype != 'datetime64[ns]':
             df['time'] = pd.to_datetime(
                 df['time'], format="%Hh %M", errors='coerce'
-                )
+            )
         return df
 
 
@@ -39,7 +39,7 @@ class Transactions2DataLoader(DataLoader):
         if df['time'].dtype != 'datetime64[ns]':
             df['time'] = pd.to_datetime(
                 df['time'], format="%Hh %M", errors='coerce'
-                )
+            )
         return df
 
 
@@ -75,16 +75,16 @@ def main():
     df1 = loader1.load_data()
 
     # Train the anomaly detection model for transactions_1.csv
-    model1 = train_model(df1, 'f0_')
+    model1 = train_model(df1, 'transacoes')
 
     # Generate alerts for anomalies in transactions_1.csv
-    anomalies1 = generate_alerts(df1, model1, 'f0_')
+    anomalies1 = generate_alerts(df1, model1, 'transacoes')
     if not anomalies1.empty:
         st.warning("Anomalies Detected in transactions_1.csv:")
         st.dataframe(anomalies1)
 
     # Plot real-time transaction data for transactions_1.csv
-    plot_data(df1, 'f0_')
+    plot_data(df1, 'transacoes')  # Usar o novo nome da coluna 'transacoes'
 
     # Load and preprocess data from transactions_2.csv
     loader2 = Transactions2DataLoader('data/transactions_2.csv')
