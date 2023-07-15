@@ -34,7 +34,7 @@ results_df2 = pd.read_sql_query(query2, conn2)
 conn1.close()
 conn2.close()
 
-st.title("Analize Data - Tarefa 1")
+st.title("Analise de Dados - Tarefa 1")
 
 
 # Checkbox to show/hide lines for checkout_1.csv

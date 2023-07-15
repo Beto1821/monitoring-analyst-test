@@ -23,6 +23,7 @@ fig2 = go.Figure(data=[go.Bar(x=df2['status'].value_counts().index,
 
 fig2.update_layout(yaxis=dict(title='count'))
 
+
 st.plotly_chart(fig2)
 
 # Reorganizar os dados usando pivot_table
