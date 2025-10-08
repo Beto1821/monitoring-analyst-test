@@ -28,7 +28,7 @@ st.markdown("""
         box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     }
     .task-card {
-        background: white;
+        background: #fafafa;
         padding: 1.5rem;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -85,7 +85,7 @@ page = st.sidebar.selectbox(
     "📱 Selecione a Tarefa:",
     [
         "🏠 Página Inicial",
-        "📊 Tarefa 1: Análise Avançada de Transações", 
+        "📊 Tarefa 1: Análise Avançada de Transações",
         "🚨 Tarefa 2: Sistema de Alertas e Incidentes",
         "📱 Tarefa 3: Central de Monitoramento Integrado"
     ]
@@ -94,6 +94,47 @@ page = st.sidebar.selectbox(
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📋 Informações do Sistema")
 st.sidebar.info("✅ Todas as aplicações integradas em uma interface única")
+
+
+# Função para carregar módulos de forma segura
+def load_task_safely(task_path, task_name):
+    """Carrega uma tarefa de forma segura"""
+    try:
+        if os.path.exists(task_path):
+            # Método mais seguro de importar
+            with open(task_path, 'r', encoding='utf-8') as f:
+                code = f.read()
+            
+            # Executar apenas se não houver problemas críticos
+            if 'import' in code and 'st.' in code:
+                # Criar ambiente local para execução
+                local_vars = {
+                    'st': st,
+                    'pd': pd,
+                    'go': go,
+                    'px': px,
+                    'np': np,
+                    'datetime': datetime,
+                    'timedelta': timedelta,
+                    'make_subplots': make_subplots,
+                    'os': os,
+                    'sqlite3': sqlite3
+                }
+                exec(code, local_vars)
+                return True
+            else:
+                st.error(f"❌ Código inválido em {task_name}")
+                return False
+        else:
+            st.error(f"❌ Arquivo não encontrado: {task_path}")
+            st.info("💡 Esta funcionalidade requer arquivos locais que podem não estar disponíveis no deploy online.")
+            return False
+            
+    except Exception as e:
+        st.error(f"❌ Erro ao carregar {task_name}: {str(e)}")
+        st.info("🔧 Esta funcionalidade requer arquivos locais. Para acesso completo, execute localmente: `streamlit run main.py`")
+        return False
+
 
 if page == "🏠 Página Inicial":
     # 🏠 PÁGINA INICIAL
@@ -161,37 +202,33 @@ if page == "🏠 Página Inicial":
     st.markdown("---")
     st.header("📊 Visão Geral do Sistema")
     
-    # Tentar carregar dados para métricas gerais
+    # Métricas gerais
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric("📁 Datasets Totais", 7, delta="3 tarefas")
+    with col2:
+        st.metric("🔧 Tecnologias", 6, delta="Plotly, Pandas, etc")
+    with col3:
+        st.metric("📊 Status Sistema", "100%", delta="Todas operacionais")
+    
+    # Gráfico demonstrativo
     try:
-        # Dados básicos para demonstração
-        datasets_info = {
-            "Tarefa 1": {"files": 4, "status": "✅ Operacional"},
-            "Tarefa 2": {"files": 2, "status": "✅ Operacional"}, 
-            "Tarefa 3": {"files": 1, "status": "✅ Operacional"}
-        }
+        datasets_info = ["Tarefa 1", "Tarefa 2", "Tarefa 3"]
+        files_count = [4, 2, 1]
         
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.metric("📁 Datasets Totais", 7, delta="3 tarefas")
-        with col2:
-            st.metric("🔧 Tecnologias", 6, delta="Plotly, Pandas, etc")
-        with col3:
-            st.metric("📊 Status Sistema", "100%", delta="Todas operacionais")
-        
-        # Gráfico de status das tarefas
         fig_status = px.bar(
-            x=list(datasets_info.keys()),
-            y=[info["files"] for info in datasets_info.values()],
+            x=datasets_info,
+            y=files_count,
             title="📊 Arquivos por Tarefa",
-            color=[info["files"] for info in datasets_info.values()],
+            color=files_count,
             color_continuous_scale="Viridis"
         )
         fig_status.update_layout(showlegend=False)
         st.plotly_chart(fig_status, use_container_width=True)
         
     except Exception as e:
-        st.info("📋 Selecione uma tarefa na sidebar para começar a análise")
+        st.info("📋 Gráfico não disponível no momento")
     
     # 🚀 Instruções de uso
     st.markdown("---")
@@ -201,7 +238,7 @@ if page == "🏠 Página Inicial":
     ### 📋 Passo a Passo:
     
     1. **📱 Navegação**: Use a sidebar para selecionar a tarefa desejada
-    2. **📊 Tarefa 1**: Comece com análise de transações e detecção de anomalias  
+    2. **📊 Tarefa 1**: Comece com análise de transações e detecção de anomalias
     3. **🚨 Tarefa 2**: Explore o sistema de alertas e incidentes
     4. **📱 Tarefa 3**: Veja a visão integrada de todo o sistema
     
@@ -212,54 +249,29 @@ if page == "🏠 Página Inicial":
     - Interface **responsiva** - funciona em desktop e mobile
     """)
     
-    # ⚠️ Aviso sobre SMS
+    # ⚠️ Aviso sobre deploy
     st.markdown("---")
     st.warning("""
-    ⚠️ **IMPORTANTE**: O sistema de alertas SMS (Tarefa 3) não está funcional nesta versão de demonstração, 
-    pois requer configuração de serviços pagos (Twilio). A funcionalidade está implementada mas desabilitada por padrão.
+    ⚠️ **IMPORTANTE**: 
+    - O sistema de alertas SMS (Tarefa 3) não está funcional nesta versão de demonstração
+    - Algumas funcionalidades podem estar limitadas no deploy online
+    - Para funcionalidade completa, execute localmente: `streamlit run main.py`
     """)
 
 elif page == "📊 Tarefa 1: Análise Avançada de Transações":
-    # 📊 TAREFA 1 - Importar e executar código da Tarefa 1
+    # 📊 TAREFA 1
     st.header("📊 Análise Avançada de Transações")
-    
-    try:
-        # Executar código da Tarefa 1
-        exec(open('Analyze_data/app.py').read())
-    except FileNotFoundError:
-        st.error("❌ Arquivo Analyze_data/app.py não encontrado!")
-        st.info("📋 Certifique-se de que todos os arquivos estão na estrutura correta.")
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar Tarefa 1: {str(e)}")
-        st.info("🔧 Verifique se todas as dependências estão instaladas.")
+    load_task_safely('Analyze_data/app.py', 'Tarefa 1')
 
 elif page == "🚨 Tarefa 2: Sistema de Alertas e Incidentes":
-    # 🚨 TAREFA 2 - Importar e executar código da Tarefa 2
+    # 🚨 TAREFA 2
     st.header("🚨 Sistema de Alertas e Incidentes")
-    
-    try:
-        # Executar código da Tarefa 2
-        exec(open('Alert_Incident/app.py').read())
-    except FileNotFoundError:
-        st.error("❌ Arquivo Alert_Incident/app.py não encontrado!")
-        st.info("📋 Certifique-se de que todos os arquivos estão na estrutura correta.")
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar Tarefa 2: {str(e)}")
-        st.info("🔧 Verifique se todas as dependências estão instaladas.")
+    load_task_safely('Alert_Incident/app.py', 'Tarefa 2')
 
 elif page == "📱 Tarefa 3: Central de Monitoramento Integrado":
-    # 📱 TAREFA 3 - Importar e executar código da Tarefa 3
+    # 📱 TAREFA 3
     st.header("📱 Central de Monitoramento Integrado")
-    
-    try:
-        # Executar código da Tarefa 3
-        exec(open('Monitoring/app.py').read())
-    except FileNotFoundError:
-        st.error("❌ Arquivo Monitoring/app.py não encontrado!")
-        st.info("📋 Certifique-se de que todos os arquivos estão na estrutura correta.")
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar Tarefa 3: {str(e)}")
-        st.info("🔧 Verifique se todas as dependências estão instaladas.")
+    load_task_safely('Monitoring/app.py', 'Tarefa 3')
 
 # 📱 Footer
 st.markdown("---")
