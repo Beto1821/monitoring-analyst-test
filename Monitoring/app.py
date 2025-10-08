@@ -37,13 +37,17 @@ def get_data_path(filename):
     # Se nada funcionar, retorna o caminho original
     return filename
 
-# 🎨 Configuração da página
-st.set_page_config(
-    page_title="📊 Central de Monitoramento Integrado",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# 🎨 Configuração da página (apenas quando executado individualmente)
+try:
+    st.set_page_config(
+        page_title="📊 Central de Monitoramento Integrado",
+        page_icon="📊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except st.errors.StreamlitAPIException:
+    # Já foi configurado pelo main.py
+    pass
 
 # 📊 Carregar dados das tarefas anteriores
 @st.cache_data

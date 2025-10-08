@@ -7,13 +7,17 @@ import numpy as np
 from datetime import datetime
 import os
 
-# 🎨 Configuração da página
-st.set_page_config(
-    page_title="🚨 Sistema de Alertas e Incidentes",
-    page_icon="🚨",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# 🎨 Configuração da página (apenas quando executado individualmente)
+try:
+    st.set_page_config(
+        page_title="🚨 Sistema de Alertas e Incidentes",
+        page_icon="🚨",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except st.errors.StreamlitAPIException:
+    # Já foi configurado pelo main.py
+    pass
 
 # Função para detectar o caminho correto dos dados
 def get_data_path(filename):
