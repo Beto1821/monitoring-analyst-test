@@ -77,23 +77,72 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 🎮 Navegação na sidebar
+# 🎮 Sistema de Rotas e Navegação
 st.sidebar.title("🎮 Navegação")
 st.sidebar.markdown("---")
 
-page = st.sidebar.selectbox(
-    "📱 Selecione a Tarefa:",
-    [
-        "🏠 Página Inicial",
-        "📊 Tarefa 1: Análise Avançada de Transações",
-        "🚨 Tarefa 2: Sistema de Alertas e Incidentes",
-        "📱 Tarefa 3: Central de Monitoramento Integrado"
-    ]
+# Definir rotas disponíveis
+routes = {
+    "home": "🏠 Página Inicial",
+    "task1": "📊 Tarefa 1: Análise Avançada de Transações",
+    "task2": "🚨 Tarefa 2: Sistema de Alertas e Incidentes",
+    "task3": "📱 Tarefa 3: Central de Monitoramento Integrado"
+}
+
+# Obter rota atual dos query parameters (usando API compatível)
+query_params = st.experimental_get_query_params()
+current_route = query_params.get("page", ["home"])[0]
+
+# Validar rota
+if current_route not in routes:
+    current_route = "home"
+
+# Sistema de navegação avançado
+st.sidebar.markdown("### 🧭 Navegação por Rotas")
+
+# Criar navegação por radio buttons (mais intuitivo)
+route_options = list(routes.keys())
+route_labels = list(routes.values())
+
+# Encontrar índice da rota atual
+try:
+    current_index = route_options.index(current_route)
+except ValueError:
+    current_index = 0
+
+# Radio button para seleção
+selected_index = st.sidebar.radio(
+    "Selecione a página:",
+    range(len(route_options)),
+    format_func=lambda x: route_labels[x],
+    index=current_index,
+    label_visibility="collapsed"
 )
 
+# Atualizar query params se mudou
+if selected_index != current_index:
+    st.experimental_set_query_params(page=route_options[selected_index])
+    st.experimental_rerun()
+
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📋 Informações do Sistema")
-st.sidebar.info("✅ Todas as aplicações integradas em uma interface única")
+
+# URLs diretas para compartilhamento
+st.sidebar.markdown("### � Links Diretos")
+base_url = "http://localhost:8501"  # Em produção seria a URL do deploy
+st.sidebar.markdown(f"""
+- [🏠 Início]({base_url}/?page=home)
+- [📊 Tarefa 1]({base_url}/?page=task1) 
+- [🚨 Tarefa 2]({base_url}/?page=task2)
+- [📱 Tarefa 3]({base_url}/?page=task3)
+""")
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("### �📋 Informações do Sistema")
+st.sidebar.info("✅ Sistema com navegação por rotas URL")
+
+# Definir página atual baseada na rota selecionada
+current_route = route_options[selected_index]
+page = routes[current_route]
 
 
 # Função para carregar módulos de forma segura
