@@ -259,10 +259,3 @@ pip install -r requirements.txt --upgrade
 Este projeto é para fins educacionais e de demonstração.
 
 ---
-
-## 📞 Suporte
-
-Para dúvidas ou problemas, consulte a documentação das tecnologias utilizadas:
-- [Streamlit Documentation](https://docs.streamlit.io/)
-- [Pandas Documentation](https://pandas.pydata.org/docs/)
-- [Twilio Python Documentation](https://www.twilio.com/docs/python)
