@@ -5,6 +5,7 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import numpy as np
 from datetime import datetime
+import os
 
 # 🎨 Configuração da página
 st.set_page_config(
@@ -14,11 +15,32 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Função para detectar o caminho correto dos dados
+def get_data_path(filename):
+    """Detecta o caminho correto dos arquivos de dados"""
+    # Primeiro, tenta o caminho relativo atual
+    if os.path.exists(filename):
+        return filename
+    
+    # Se executado a partir do main.py, ajusta o caminho
+    alert_path = os.path.join("Alert_Incident", filename)
+    if os.path.exists(alert_path):
+        return alert_path
+    
+    # Caminho absoluto como fallback
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    abs_path = os.path.join(current_dir, filename)
+    if os.path.exists(abs_path):
+        return abs_path
+    
+    # Se nada funcionar, retorna o caminho original para mostrar o erro
+    return filename
+
 # 📊 Carregar os dados
 @st.cache_data
 def load_data():
-    df1 = pd.read_csv('data/transactions_1.csv')
-    df2 = pd.read_csv('data/transactions_2.csv')
+    df1 = pd.read_csv(get_data_path('data/transactions_1.csv'))
+    df2 = pd.read_csv(get_data_path('data/transactions_2.csv'))
     return df1, df2
 
 df1, df2 = load_data()

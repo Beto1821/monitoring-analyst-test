@@ -6,21 +6,43 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 import numpy as np
+import os
 
 # Disable warning for st.pyplot() - option deprecated in newer Streamlit versions
 # st.set_option('deprecation.showPyplotGlobalUse', False)
 
+# Função para detectar o caminho correto dos dados
+def get_data_path(filename):
+    """Detecta o caminho correto dos arquivos de dados"""
+    # Primeiro, tenta o caminho relativo atual
+    if os.path.exists(filename):
+        return filename
+    
+    # Se executado a partir do main.py, ajusta o caminho
+    analyze_path = os.path.join("Analyze_data", filename)
+    if os.path.exists(analyze_path):
+        return analyze_path
+    
+    # Caminho absoluto como fallback
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    abs_path = os.path.join(current_dir, filename)
+    if os.path.exists(abs_path):
+        return abs_path
+    
+    # Se nada funcionar, retorna o caminho original para mostrar o erro
+    return filename
+
 # Load CSV files
-df1 = pd.read_csv("data/checkout_1.csv")
-df2 = pd.read_csv("data/checkout_2.csv")
-df3 = pd.read_csv("data/transactions_1.csv")
-df4 = pd.read_csv("data/transactions_2.csv")
+df1 = pd.read_csv(get_data_path("data/checkout_1.csv"))
+df2 = pd.read_csv(get_data_path("data/checkout_2.csv"))
+df3 = pd.read_csv(get_data_path("data/transactions_1.csv"))
+df4 = pd.read_csv(get_data_path("data/transactions_2.csv"))
 
 # Create SQLite database connections
-conn1 = sqlite3.connect('data1.db')
+conn1 = sqlite3.connect(get_data_path('data1.db'))
 df1.to_sql('data_table', conn1, if_exists='replace', index=False)
 
-conn2 = sqlite3.connect('data2.db')
+conn2 = sqlite3.connect(get_data_path('data2.db'))
 df2.to_sql('data_table', conn2, if_exists='replace', index=False)
 
 # Define SQL queries

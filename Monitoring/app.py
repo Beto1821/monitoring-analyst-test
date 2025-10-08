@@ -9,6 +9,34 @@ import sqlite3
 import time
 import os
 
+# Função para detectar o caminho correto dos dados
+def get_data_path(filename):
+    """Detecta o caminho correto dos arquivos de dados"""
+    # Primeiro, tenta o caminho relativo atual
+    if os.path.exists(filename):
+        return filename
+    
+    # Se executado a partir do main.py, ajusta os caminhos
+    monitoring_path = os.path.join("Monitoring", filename)
+    if os.path.exists(monitoring_path):
+        return monitoring_path
+    
+    # Para arquivos de outras tarefas
+    if "../" in filename:
+        # Remove ../ e tenta diretamente
+        clean_filename = filename.replace("../", "")
+        if os.path.exists(clean_filename):
+            return clean_filename
+    
+    # Caminho absoluto como fallback
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    abs_path = os.path.join(current_dir, filename.replace("../", ""))
+    if os.path.exists(abs_path):
+        return abs_path
+    
+    # Se nada funcionar, retorna o caminho original
+    return filename
+
 # 🎨 Configuração da página
 st.set_page_config(
     page_title="📊 Central de Monitoramento Integrado",
@@ -25,10 +53,10 @@ def load_integrated_data():
     
     # Dados da Tarefa 1 (Analyze_data)
     try:
-        data['checkout_1'] = pd.read_csv('../Analyze_data/data/checkout_1.csv')
-        data['checkout_2'] = pd.read_csv('../Analyze_data/data/checkout_2.csv')
-        data['transactions_analyze_1'] = pd.read_csv('../Analyze_data/data/transactions_1.csv')
-        data['transactions_analyze_2'] = pd.read_csv('../Analyze_data/data/transactions_2.csv')
+        data['checkout_1'] = pd.read_csv(get_data_path('../Analyze_data/data/checkout_1.csv'))
+        data['checkout_2'] = pd.read_csv(get_data_path('../Analyze_data/data/checkout_2.csv'))
+        data['transactions_analyze_1'] = pd.read_csv(get_data_path('../Analyze_data/data/transactions_1.csv'))
+        data['transactions_analyze_2'] = pd.read_csv(get_data_path('../Analyze_data/data/transactions_2.csv'))
         
     except FileNotFoundError:
         st.warning("⚠️ Dados da Tarefa 1 não encontrados. Usando dados locais.")
@@ -37,14 +65,14 @@ def load_integrated_data():
     
     # Dados da Tarefa 2 (Alert_Incident)
     try:
-        data['alert_transactions_1'] = pd.read_csv('../Alert_Incident/data/transactions_1.csv')
-        data['alert_transactions_2'] = pd.read_csv('../Alert_Incident/data/transactions_2.csv')
+        data['alert_transactions_1'] = pd.read_csv(get_data_path('../Alert_Incident/data/transactions_1.csv'))
+        data['alert_transactions_2'] = pd.read_csv(get_data_path('../Alert_Incident/data/transactions_2.csv'))
     except FileNotFoundError:
         st.warning("⚠️ Dados da Tarefa 2 não encontrados. Usando dados locais.")
     
     # Dados locais (Monitoring)
     try:
-        data['monitoring_transactions'] = pd.read_csv('data/transactions_1.csv')
+        data['monitoring_transactions'] = pd.read_csv(get_data_path('data/transactions_1.csv'))
     except FileNotFoundError:
         st.error("❌ Dados de monitoramento não encontrados!")
         data['monitoring_transactions'] = pd.DataFrame()
