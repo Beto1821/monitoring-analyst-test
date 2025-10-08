@@ -34,6 +34,24 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin: 1rem 0;
         border-left: 4px solid #667eea;
+        color: #333;
+    }
+    .task-card h3 {
+        color: #667eea;
+        margin-top: 0;
+    }
+    .task-card h4 {
+        color: #444;
+    }
+    .task-card p {
+        color: #666;
+        line-height: 1.6;
+    }
+    .task-card ul {
+        color: #555;
+    }
+    .task-card li {
+        margin: 0.5rem 0;
     }
     .nav-button {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
