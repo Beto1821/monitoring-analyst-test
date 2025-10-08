@@ -1,82 +1,43 @@
-# 📊 Monitoring Analyst Test# Projeto monitoring-analyst-test
+# 📊 Monitoring Analyst Test
 
+Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Contém três tarefas independentes com funcionalidades específicas de análise de dados.
 
+## 🚀 Configuração Inicial
 
-Este projeto é um sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Contém três tarefas principais que demonstram diferentes aspectos de análise de dados e monitoramento.# rode na raiz
-
-# Crie o ambiente virtual para o projeto
-
-## 🚀 Configuração Inicialpython3 -m venv .venv && source .venv/bin/activate
-
-
-
-### Pré-requisitos# Instale as dependências
-
-- Python 3.8 ou superiorpython3 -m pip install -r requirements.txt
-
+### Pré-requisitos
+- Python 3.8 ou superior
 - pip (gerenciador de pacotes Python)
 
+### Instalação Geral
 
-
-### Instalação# TAREFA 1 - Sistema de Análise de Transações
-
-
-
-1. **Clone o repositório**##  Como Executar:
-
+1. **Clone o repositório**
 ```bash
-
-git clone <url-do-repositorio>```bash
-
-cd monitoring-analyst-test# Navegar para o diretório da tarefa 1
-
-```cd Analyze_data
-
-
-
-2. **Crie e ative o ambiente virtual**# Executar aplicação
-
-```bashstreamlit run app.py
-
-# Criar ambiente virtual```
-
-python3 -m venv .venv
-
-### 📊 Funcionalidades:
-
-# Ativar ambiente virtual (macOS/Linux)- ✅ Análise temporal de transações
-
-source .venv/bin/activate- 📈 Comparação entre checkout 1 e checkout 2  
-
-- � Visualização de dados com checkboxes interativos
-
-# Ativar ambiente virtual (Windows)- 📋 Gráficos de today, yesterday, same day last week
-
-.venv\Scripts\activate- 💾 Armazenamento em banco SQLite
-
+git clone <url-do-repositorio>
+cd monitoring-analyst-test
 ```
 
-# TAREFA 2
+2. **Crie e ative o ambiente virtual**
+```bash
+# Criar ambiente virtual
+python3 -m venv .venv
+
+# Ativar ambiente virtual (macOS/Linux)
+source .venv/bin/activate
+
+# Ativar ambiente virtual (Windows)
+.venv\Scripts\activate
+```
 
 3. **Instale as dependências**
+```bash
+python3 -m pip install -r requirements.txt
+```
 
-```bash# Rodando o app para geração dos gráficos Tarefa 1
+## 📋 Estrutura do Projeto
 
-python3 -m pip install -r requirements.txtcd Alert_Incident/
-
-```streamlit run app.py
-
-
-
-## 📋 Estrutura do Projeto# Monitoring
-
-
-
-```# Rodando o app para geração dos gráficos Tarefa 1
-
-monitoring-analyst-test/cd Monitoring/
-
-├── README.mdstreamlit run app.py
+```
+monitoring-analyst-test/
+├── README.md
 ├── requirements.txt
 ├── .venv/                    # Ambiente virtual
 ├── Analyze_data/            # 📊 TAREFA 1
@@ -102,160 +63,213 @@ monitoring-analyst-test/cd Monitoring/
 ```
 
 ---
+├── requirements.txt
+├── .venv/                    # Ambiente virtual
+├── Analyze_data/            # 📊 TAREFA 1
+│   ├── app.py
+│   ├── data.db
+│   └── data/
+│       ├── checkout_1.csv
+│       ├── checkout_2.csv
+│       ├── transactions_1.csv
+│       └── transactions_2.csv
+├── Alert_Incident/          # 🚨 TAREFA 2  
+│   ├── app.py
+│   └── data/
+│       ├── transactions_1.csv
+│       └── transactions_2.csv
+└── Monitoring/              # 📱 TAREFA 3
+    ├── app.py
+    ├── credenciais.py
+    ├── database.db
+    ├── models.py
+    └── data/
+        └── transactions_1.csv
+```
 
-## 📊 TAREFA 1 - Sistema de Análise de Transações
+## 📊 TAREFA 1: Análise Avançada de Transações
 
-### 🎯 Objetivo
-Sistema interativo para análise temporal de transações com comparação entre diferentes checkouts e visualização de dados históricos.
+> **Título da Aplicação:** "📊 Análise Avançada de Transações"  
+> **Localização:** `Analyze_data/`
 
-### 🛠️ Como Executar
+### 🎯 O que faz
+Sistema interativo para análise temporal de transações com comparação inteligente entre checkouts e detecção automática de anomalias.
+
+### � Como executar
 ```bash
-# Navegar para o diretório da tarefa 1
+# Navegar para o diretório
 cd Analyze_data
 
-# Executar aplicação Streamlit
+# Executar aplicação
 streamlit run app.py
 ```
 
-### ✨ Funcionalidades
-- **📈 Análise Temporal**: Visualização de transações por períodos (hoje, ontem, mesmo dia da semana passada)
-- **🔄 Comparação de Checkouts**: Análise comparativa entre checkout_1 e checkout_2
-- **✅ Interface Interativa**: Checkboxes para seleção dinâmica de visualizações
-- **📊 Gráficos Dinâmicos**: Matplotlib integrado para visualizações em tempo real
-- **💾 Persistência**: Armazenamento automatizado em banco SQLite
-- **📋 Processamento CSV**: Carregamento e análise automática de arquivos CSV
+### ✨ Principais funcionalidades
+- **📈 Gráficos Interativos**: Visualizações modernas com Plotly
+- **🔍 Análise de Anomalias**: Detecção automática de problemas no Checkout 2
+- **� Comparação Temporal**: Hoje vs Ontem vs Semana Passada
+- **💡 Insights Inteligentes**: Diagnóstico de causas e soluções
+- **� Métricas de Impacto**: Quantificação de perdas e prioridades
+- **🎮 Controles Interativos**: Checkboxes para personalizar visualizações
 
-### 🔧 Tecnologias Utilizadas
-- **Streamlit**: Framework web para dashboards
-- **Pandas**: Manipulação e análise de dados
-- **Matplotlib**: Visualização de gráficos
-- **SQLite**: Banco de dados local
-- **NumPy**: Computação numérica
+### 🔧 Tecnologias
+Plotly • Pandas • Matplotlib • SQLite • Streamlit
+
+### 📍 Acesso Local
+http://localhost:8502
 
 ---
 
-## 🚨 TAREFA 2 - Sistema de Alertas e Incidentes
+## 🚨 TAREFA 2: Sistema de Alertas e Incidentes
 
-### 🎯 Objetivo
-Dashboard para monitoramento de transações com análise de status e identificação de incidentes através de visualizações de barras e pivot tables.
+> **Título da Aplicação:** "🚨 Sistema de Alertas e Incidentes - Tarefa 2"  
+> **Localização:** `Alert_Incident/`
 
-### 🛠️ Como Executar
+### 🎯 O que faz
+Dashboard profissional para monitoramento de transações com sistema inteligente de detecção de anomalias e alertas automáticos.
+
+### � Como executar
 ```bash
-# Navegar para o diretório da tarefa 2
+# Navegar para o diretório
 cd Alert_Incident
 
-# Executar aplicação Streamlit
+# Executar aplicação
 streamlit run app.py
 ```
 
-### ✨ Funcionalidades
-- **📊 Análise de Status**: Contagem automática de transações por status
-- **📈 Gráficos de Barras**: Visualização comparativa entre transactions_1 e transactions_2
-- **🔄 Pivot Tables**: Reorganização inteligente de dados por tempo e status
-- **🚨 Detecção de Incidentes**: Identificação visual de anomalias nos dados
-- **📋 Dashboard Interativo**: Interface intuitiva para análise rápida
+### ✨ Principais funcionalidades
+- **🎮 Interface Moderna**: Design profissional com gradientes e métricas
+- **� Múltiplas Visualizações**: Barras, Pizza, Sunburst, Treemap
+- **� Alertas Automáticos**: Detecção inteligente de anomalias críticas
+- **📈 Análise Temporal**: Evolução dos status ao longo do tempo
+- **� Recomendações**: Ações imediatas e preventivas
+- **🔍 Análise Comparativa**: Side-by-side entre datasets
+- **📋 Insights Automáticos**: Conclusões baseadas em dados
 
-### 🔧 Tecnologias Utilizadas
-- **Streamlit**: Interface web interativa
-- **Pandas**: Análise e manipulação de dados
-- **Plotly**: Gráficos interativos avançados
-- **CSV Processing**: Leitura automática de dados
+### 🔧 Tecnologias
+Plotly Express • Pandas • Streamlit • Análise Estatística
+
+### 📍 Acesso Local
+http://localhost:8501
 
 ---
 
-## 📱 TAREFA 3 - Sistema de Monitoramento com Alertas SMS
+## 📱 TAREFA 3: Monitoramento de Transações
 
-### 🎯 Objetivo
+> **Título da Aplicação:** "Monitoramento de Transações"  
+> **Localização:** `Monitoring/`
+
+### 🎯 O que faz
 Sistema avançado de monitoramento em tempo real com capacidade de envio de alertas SMS via Twilio e persistência em banco de dados.
 
-### 🛠️ Como Executar
+### � Como executar
 ```bash
-# Navegar para o diretório da tarefa 3
+# Navegar para o diretório
 cd Monitoring
 
-# Executar aplicação Streamlit
+# Executar aplicação
 streamlit run app.py
 ```
 
-### ⚙️ Configuração SMS (Twilio)
-1. Crie uma conta no [Twilio](https://www.twilio.com/)
-2. Configure o arquivo `credenciais.py`:
+### ⚙️ Configuração Twilio (Opcional)
+1. Crie conta no [Twilio](https://www.twilio.com/)
+2. Configure `credenciais.py`:
 ```python
 account_sid = "seu_account_sid"
 token = "seu_auth_token"  
 remetente = "seu_numero_twilio"
 ```
 
-### ✨ Funcionalidades
-- **📱 Alertas SMS**: Integração com Twilio para notificações instantâneas
-- **💾 Persistência**: Armazenamento em SQLite com models personalizados
-- **📊 Monitoramento Real-time**: Acompanhamento contínuo de métricas
-- **🔄 Processamento Automático**: Conversão SQL para DataFrame
-- **🚨 Sistema de Alertas**: Detecção automática de anomalias
-- **📈 Visualização**: Dashboard para acompanhamento de métricas
+### ✨ Principais funcionalidades
+- **📱 Alertas SMS**: Notificações instantâneas via Twilio
+- **💾 Persistência**: Banco SQLite com models personalizados
+- **📊 Monitoramento Real-time**: Acompanhamento contínuo
+- **🔄 Processamento Automático**: SQL para DataFrame
+- **🚨 Sistema de Alertas**: Detecção de anomalias
+- **📈 Visualizações**: Dashboard de métricas
 
-### 🔧 Tecnologias Utilizadas
-- **Streamlit**: Interface de monitoramento
-- **Twilio**: Serviço de SMS
-- **SQLite**: Banco de dados local
-- **Pandas**: Processamento de dados
-- **Plotly**: Visualizações interativas
-- **Custom Models**: Estruturas de dados personalizadas
+### 🔧 Tecnologias
+Twilio • SQLite • Pandas • Plotly • Custom Models
+
+### 📍 Acesso Local
+http://localhost:8503
 
 ---
 
-## 🛠️ Comandos Úteis
+## � Execução Rápida
 
-### Ativação do Ambiente Virtual
+### Executar Todas as Tarefas
 ```bash
-# macOS/Linux
+# Ativar ambiente
 source .venv/bin/activate
 
-# Windows
-.venv\Scripts\activate
-```
-
-### Execução das Aplicações
-```bash
-# Tarefa 1 - Análise de Transações
+# Tarefa 1: Análise Avançada de Transações
 cd Analyze_data && streamlit run app.py
+# Acesso: http://localhost:8502
 
-# Tarefa 2 - Alertas e Incidentes  
-cd Alert_Incident && streamlit run app.py
+# Tarefa 2: Sistema de Alertas e Incidentes  
+cd ../Alert_Incident && streamlit run app.py
+# Acesso: http://localhost:8501
 
-# Tarefa 3 - Monitoramento com SMS
-cd Monitoring && streamlit run app.py
+# Tarefa 3: Monitoramento de Transações
+cd ../Monitoring && streamlit run app.py
+# Acesso: http://localhost:8503
 ```
 
-### Atualização de Dependências
+### Comandos de Manutenção
 ```bash
+# Atualizar dependências
 pip install -r requirements.txt --upgrade
+
+# Debug detalhado
+streamlit run app.py --logger.level=debug
+
+# Parar todas as aplicações
+pkill -f streamlit
 ```
 
 ---
 
-## 📝 Notas Importantes
+## � Resumo das Funcionalidades
 
-- **🔒 Credenciais**: Configure adequadamente o arquivo `credenciais.py` para funcionalidades SMS
-- **📊 Dados**: Os arquivos CSV estão incluídos para demonstração
-- **🌐 Acesso**: Aplicações executam por padrão em `http://localhost:8501`
-- **💾 Persistência**: Bancos SQLite são criados automaticamente
-- **🐛 Debug**: Use `streamlit run app.py --logger.level=debug` para logs detalhados
-
----
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+| Tarefa | Aplicação | Foco Principal | Tecnologia Destaque |
+|--------|-----------|----------------|---------------------|
+| **1** | � Análise Avançada | Detecção de anomalias em checkouts | Plotly + Análise Inteligente |
+| **2** | 🚨 Alertas e Incidentes | Dashboard de monitoramento | Interface Moderna + Alertas |
+| **3** | 📱 Monitoramento | Alertas SMS em tempo real | Twilio + Persistência |
 
 ---
 
-## 📄 Licença
+## 📝 Informações Importantes
 
-Este projeto é para fins educacionais e de demonstração.
+- **📊 Dados**: Arquivos CSV incluídos para demonstração
+- **💾 Bancos**: SQLite criados automaticamente  
+- **� Credenciais**: Configure `credenciais.py` apenas para SMS (Tarefa 3)
+- **🌐 Portas**: Cada aplicação usa uma porta diferente
+- **� Responsivo**: Todas as interfaces adaptam ao mobile
 
 ---
+
+## 🎯 Para Desenvolvedores
+
+### Deploy
+- **Streamlit Cloud**: Recomendado para deploy gratuito
+- **Heroku**: Para projetos com mais recursos
+- **Railway**: Alternativa moderna
+
+### Estrutura
+- Cada tarefa é **independente**
+- **Dados compartilhados** entre algumas tarefas
+- **Configuração única** do ambiente virtual
+
+---
+
+## 📞 Suporte Técnico
+
+- **Streamlit**: [docs.streamlit.io](https://docs.streamlit.io/)
+- **Plotly**: [plotly.com/python/](https://plotly.com/python/)
+- **Twilio**: [twilio.com/docs/python](https://www.twilio.com/docs/python)
+
+---
+
+*Desenvolvido com ❤️ para análise inteligente de transações*
