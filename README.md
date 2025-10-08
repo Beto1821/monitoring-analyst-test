@@ -1,6 +1,51 @@
 # 📊 Monitoring Analyst Test
 
-Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Contém três tarefas independentes com funcionalidades específicas de análise de dados.
+Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Contém três tarefas independentes com funcionalidades específicas de análise de dados.## 🚀 Execução Rápida
+
+### � Executar Sistema Unificado (Recomendado)
+```bash
+# Ativar ambiente
+source .venv/bin/activate
+
+# Executar aplicação principal unificada
+streamlit run main.py
+# Acesso: http://localhost:8501
+```
+
+**✅ Vantagens do Sistema Unificado:**
+- Uma única aplicação com navegação lateral
+- Interface consistente entre todas as tarefas
+- Mesmo sistema usado no deploy online
+- Navegação fluida sem trocar de porta
+
+### 📋 Executar Tarefas Individualmente
+```bash
+# Ativar ambiente
+source .venv/bin/activate
+
+# Tarefa 1: Análise Avançada de Transações
+cd Analyze_data && streamlit run app.py
+# Acesso: http://localhost:8502
+
+# Tarefa 2: Sistema de Alertas e Incidentes  
+cd ../Alert_Incident && streamlit run app.py
+# Acesso: http://localhost:8501
+
+# Tarefa 3: Monitoramento de Transações
+cd ../Monitoring && streamlit run app.py
+# Acesso: http://localhost:8503ine
+
+**🚀 Aplicação em Produção:** [https://monitoring-analyst-test.streamlit.app/](https://monitoring-analyst-test.streamlit.app/)
+
+### 💡 Como usar o deploy:
+1. **Acesse a URL** acima para usar o sistema online
+2. **Navegue** entre as tarefas usando o menu lateral
+3. **Explore** cada funcionalidade sem necessidade de instalação local
+
+### ⚠️ Limitações do Deploy Online:
+- Sistema de SMS não funcional (requer configuração de serviços pagos)
+- Algumas funcionalidades podem ter limitações de arquivo local
+- Para funcionalidade completa, execute localmente conforme instruções abaixo
 
 ## 🚀 Configuração Inicial
 
@@ -253,9 +298,27 @@ pkill -f streamlit
 ## 🎯 Para Desenvolvedores
 
 ### Deploy
-- **Streamlit Cloud**: Recomendado para deploy gratuito
+
+#### 🌐 Deploy Atual - Streamlit Cloud
+**URL de Produção:** [https://monitoring-analyst-test.streamlit.app/](https://monitoring-analyst-test.streamlit.app/)
+
+**Configuração do Deploy:**
+- **Repository:** `Beto1821/monitoring-analyst-test`
+- **Branch:** `main`
+- **Main file:** `main.py`
+- **Python version:** 3.9+
+
+#### 🔧 Arquitetura de Deploy
+- **Sistema Unificado**: `main.py` como ponto de entrada único
+- **Navegação Lateral**: Menu para alternar entre as 3 tarefas
+- **Carregamento Seguro**: Tratamento gracioso de arquivos não encontrados
+- **Interface Responsiva**: Funciona em desktop e mobile
+
+#### 🚀 Outras Opções de Deploy
+- **Streamlit Cloud**: ✅ Atualmente em uso (gratuito)
 - **Heroku**: Para projetos com mais recursos
 - **Railway**: Alternativa moderna
+- **Render**: Deploy rápido e simples
 
 ### Estrutura
 - Cada tarefa é **independente**
