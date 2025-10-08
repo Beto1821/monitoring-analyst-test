@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import sqlite3
 
-# Disable warning for st.pyplot()
-st.set_option('deprecation.showPyplotGlobalUse', False)
+# Disable warning for st.pyplot() - option deprecated in newer Streamlit versions
+# st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Load CSV files
 df1 = pd.read_csv("data/checkout_1.csv")
