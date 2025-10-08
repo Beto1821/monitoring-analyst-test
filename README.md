@@ -272,4 +272,25 @@ pkill -f streamlit
 
 ---
 
+## 🎯 DESTAQUE: TAREFA 3 INTEGRADA
+
+### 📊 Central de Monitoramento Renovada
+A **Tarefa 3** foi completamente reformulada como **solução integrada**:
+
+- **🔗 Integra Tarefas 1 + 2**: Monitora todos os dados em uma interface
+- **🎮 Interface Moderna**: Design profissional com visualizações avançadas  
+- **🚨 Alertas Inteligentes**: Detecção automática cross-datasets
+- **📊 Dashboard Unificado**: Métricas consolidadas de todas as fontes
+- **💡 Análise Correlacionada**: Insights baseados em dados integrados
+
+### 🚀 Acesso Direto:
+```bash
+cd Monitoring && streamlit run app.py
+# http://localhost:8502
+```
+
+**Agora você tem uma central de comando que resolve os problemas das tarefas anteriores!** 🎯
+
+---
+
 *Desenvolvido com ❤️ para análise inteligente de transações*
