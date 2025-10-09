@@ -10,59 +10,97 @@ import os
 # st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
-# Função para detectar o caminho correto dos dados
-def get_data_path(filename):
-    """Detecta o caminho correto dos arquivos de dados"""
+# Função para detectar o caminho correto dos bancos de dados
+def get_db_path(db_filename):
+    """Detecta o caminho correto dos arquivos de banco de dados"""
     # Primeiro, tenta o caminho relativo atual
-    if os.path.exists(filename):
-        return filename
+    if os.path.exists(db_filename):
+        return db_filename
     
     # Se executado a partir do main.py, ajusta o caminho
-    analyze_path = os.path.join("Analyze_data", filename)
+    analyze_path = os.path.join("Analyze_data", db_filename)
     if os.path.exists(analyze_path):
         return analyze_path
     
     # Caminho absoluto como fallback
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    abs_path = os.path.join(current_dir, filename)
+    abs_path = os.path.join(current_dir, db_filename)
     if os.path.exists(abs_path):
         return abs_path
     
     # Se nada funcionar, retorna o caminho original para mostrar o erro
-    return filename
+    return db_filename
 
+@st.cache_data(ttl=300)  # Cache por 5 minutos
+def load_data_from_databases():
+    """Carrega dados diretamente dos bancos SQLite"""
+    try:
+        # Conectar aos bancos de dados existentes
+        conn_main = sqlite3.connect(get_db_path('data.db'))
+        
+        # Carregar dados das tabelas existentes
+        df_checkout1 = pd.read_sql_query("SELECT * FROM data_table_1", conn_main)
+        df_checkout2 = pd.read_sql_query("SELECT * FROM data_table_2", conn_main)
+        df_general = pd.read_sql_query("SELECT * FROM data_table", conn_main)
+        
+        conn_main.close()
+        
+        return df_checkout1, df_checkout2, df_general
+        
+    except Exception as e:
+        st.error(f"Erro ao carregar dados do banco: {str(e)}")
+        # Fallback para dados vazios estruturados
+        empty_df = pd.DataFrame({
+            'time': [], 'today': [], 'yesterday': [], 
+            'same_day_last_week': [], 'avg_last_week': [], 'avg_last_month': []
+        })
+        return empty_df, empty_df, empty_df
 
-# Load CSV files
-df1 = pd.read_csv(get_data_path("data/checkout_1.csv"))
-df2 = pd.read_csv(get_data_path("data/checkout_2.csv"))
-df3 = pd.read_csv(get_data_path("data/transactions_1.csv"))
-df4 = pd.read_csv(get_data_path("data/transactions_2.csv"))
+# Carregar dados dos bancos SQLite
+df1, df2, df_general = load_data_from_databases()
 
-# Create SQLite database connections
-conn1 = sqlite3.connect(get_data_path('data1.db'))
-df1.to_sql('data_table', conn1, if_exists='replace', index=False)
+# Criar conexões para análises em tempo real (se necessário)
+@st.cache_resource
+def get_database_connections():
+    """Retorna conexões ativas para os bancos"""
+    try:
+        conn_main = sqlite3.connect(get_db_path('data.db'))
+        conn1 = sqlite3.connect(get_db_path('data1.db'))
+        conn2 = sqlite3.connect(get_db_path('data2.db'))
+        return conn_main, conn1, conn2
+    except Exception as e:
+        st.error(f"Erro ao conectar bancos: {str(e)}")
+        return None, None, None
 
-conn2 = sqlite3.connect(get_data_path('data2.db'))
-df2.to_sql('data_table', conn2, if_exists='replace', index=False)
+# Define SQL queries para análises específicas
+query_checkout1 = "SELECT time, today, yesterday, same_day_last_week, avg_last_week, avg_last_month FROM data_table_1"
+query_checkout2 = "SELECT time, today, yesterday, same_day_last_week, avg_last_week, avg_last_month FROM data_table_2"
+query_general = "SELECT time, today, yesterday, same_day_last_week, avg_last_week, avg_last_month FROM data_table"
 
-# Define SQL queries
-query1 = "SELECT time, today, yesterday, same_day_last_week, " \
-         "avg_last_week, avg_last_month FROM data_table"
+# Preparar dados para análise (usar os dados carregados dos bancos)
+def prepare_analysis_data():
+    """Prepara dados para análise convertendo formatos necessários"""
+    global df1, df2, df_general
+    
+    # Verificar se os dados foram carregados
+    if df1.empty or df2.empty:
+        st.error("❌ Erro: Dados não foram carregados dos bancos SQLite!")
+        return None, None
+    
+    # Fazer cópias para análise
+    results_df1 = df1.copy()
+    results_df2 = df2.copy()
+    
+    # Converter time para formato numérico para cálculos
+    if 'time' in results_df1.columns:
+        results_df1['time_numeric'] = results_df1['time'].str.replace('h', '').str.replace('|', '').astype(int)
+    if 'time' in results_df2.columns:
+        results_df2['time_numeric'] = results_df2['time'].str.replace('h', '').str.replace('|', '').astype(int)
+    
+    return results_df1, results_df2
 
-query2 = "SELECT time, today, yesterday, same_day_last_week, " \
-         "avg_last_week, avg_last_month FROM data_table"
-
-# Execute SQL queries
-results_df1 = pd.read_sql_query(query1, conn1)
-results_df2 = pd.read_sql_query(query2, conn2)
-
-# Close database connections
-conn1.close()
-conn2.close()
-
-# Converter time para formato numérico para cálculos
-results_df1['time_numeric'] = results_df1['time'].str.replace('h', '').astype(int)
-results_df2['time_numeric'] = results_df2['time'].str.replace('h', '').astype(int)
+# Executar preparação dos dados
+results_df1, results_df2 = prepare_analysis_data()
 
 # 🎨 Configuração da página (apenas quando executado individualmente)
 try:
@@ -77,7 +115,27 @@ except st.errors.StreamlitAPIException:
     pass
 
 # 🎯 TÍTULO PRINCIPAL
-# st.title("📊 Análise Avançada de Transações")
+st.markdown("""
+<div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;'>
+    <h1 style='color: white; text-align: center; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>
+        📊 Análise Avançada de Transações
+    </h1>
+    <p style='color: rgba(255,255,255,0.9); text-align: center; margin: 0.5rem 0 0 0; font-size: 1.2rem;'>
+        📗 Dados carregados diretamente dos bancos SQLite (data.db)
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+# 📊 Informações sobre fonte de dados
+if results_df1 is not None and results_df2 is not None:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("🗄️ Checkout 1 (Registros)", len(df1))
+    with col2:
+        st.metric("🗄️ Checkout 2 (Registros)", len(df2))
+    with col3:
+        st.metric("💾 Fonte", "SQLite Database")
+
 st.markdown("---")
 
 # 🎛️ SIDEBAR PARA CONTROLES

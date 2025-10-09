@@ -9,33 +9,127 @@ import sqlite3
 import time
 import os
 
-# Função para detectar o caminho correto dos dados
-def get_data_path(filename):
-    """Detecta o caminho correto dos arquivos de dados"""
-    # Primeiro, tenta o caminho relativo atual
-    if os.path.exists(filename):
-        return filename
-    
-    # Se executado a partir do main.py, ajusta os caminhos
-    monitoring_path = os.path.join("Monitoring", filename)
-    if os.path.exists(monitoring_path):
-        return monitoring_path
-    
-    # Para arquivos de outras tarefas
-    if "../" in filename:
-        # Remove ../ e tenta diretamente
-        clean_filename = filename.replace("../", "")
-        if os.path.exists(clean_filename):
-            return clean_filename
-    
-    # Caminho absoluto como fallback
+# Função para detectar o caminho correto dos bancos de dados
+def get_db_path(db_filename, task_folder=None):
+    """Detecta o caminho correto dos arquivos de banco de dados"""
+    # Se especificar pasta da tarefa
+    if task_folder:
+        task_path = os.path.join(task_folder, db_filename)
+        if os.path.exists(task_path):
+            return task_path
+
+# Função para detectar o caminho correto dos arquivos de dados CSV
+def get_data_path(relative_path):
+    """Detecta o caminho correto dos arquivos CSV"""
+    # Caminho absoluto do diretório atual
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    abs_path = os.path.join(current_dir, filename.replace("../", ""))
-    if os.path.exists(abs_path):
-        return abs_path
     
-    # Se nada funcionar, retorna o caminho original
-    return filename
+    # Construir caminho absoluto
+    absolute_path = os.path.join(current_dir, relative_path)
+    
+    if os.path.exists(absolute_path):
+        return absolute_path
+    
+    # Fallback - tentar caminhos relativos
+    fallback_paths = [
+        relative_path,
+        os.path.join('..', relative_path),
+        os.path.join('../..', relative_path)
+    ]
+    
+    for path in fallback_paths:
+        if os.path.exists(path):
+            return path
+    
+    return relative_path  # Retornar original se nada funcionar
+
+
+@st.cache_data(ttl=300)  # Cache por 5 minutos
+def load_integrated_data():
+    """Carrega dados integrados de todas as tarefas via SQLite"""
+    try:
+        data = {}
+        
+        # Carregar dados da Tarefa 1 (Analyze_data)
+        task1_db_path = get_db_path('data.db', '../Analyze_data')
+        if os.path.exists(task1_db_path):
+            conn1 = sqlite3.connect(task1_db_path)
+            data['checkout1'] = pd.read_sql_query("SELECT * FROM data_table_1", conn1)
+            data['checkout2'] = pd.read_sql_query("SELECT * FROM data_table_2", conn1)
+            data['general'] = pd.read_sql_query("SELECT * FROM data_table", conn1)
+            conn1.close()
+        else:
+            st.warning("⚠️ Banco da Tarefa 1 não encontrado")
+            data['checkout1'] = pd.DataFrame()
+            data['checkout2'] = pd.DataFrame()
+            data['general'] = pd.DataFrame()
+        
+        # Carregar dados do banco local de monitoramento
+        monitoring_db_path = get_db_path('database.db')
+        data['monitoring_logs'] = load_or_create_monitoring_data(monitoring_db_path)
+        
+        return data
+        
+    except Exception as e:
+        st.error(f"Erro ao carregar dados integrados: {str(e)}")
+        return {
+            'checkout1': pd.DataFrame(),
+            'checkout2': pd.DataFrame(), 
+            'general': pd.DataFrame(),
+            'monitoring_logs': pd.DataFrame()
+        }
+
+def load_or_create_monitoring_data(db_path):
+    """Carrega ou cria dados de monitoramento"""
+    try:
+        conn = sqlite3.connect(db_path)
+        
+        # Criar tabela se não existir
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS monitoring_events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                source TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                severity TEXT NOT NULL,
+                message TEXT NOT NULL,
+                value REAL,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        # Verificar se há dados
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM monitoring_events")
+        count = cursor.fetchone()[0]
+        
+        if count == 0:
+            # Inserir dados de exemplo
+            sample_data = [
+                ('00h', 'checkout1', 'transaction_count', 'info', 'Transações processadas', 6),
+                ('01h', 'checkout1', 'transaction_count', 'info', 'Transações processadas', 3),
+                ('02h', 'checkout1', 'transaction_count', 'warning', 'Volume baixo detectado', 3),
+                ('00h', 'checkout2', 'transaction_count', 'critical', 'Checkout com problemas', 2),
+                ('01h', 'checkout2', 'transaction_count', 'critical', 'Sistema instável', 1),
+                ('02h', 'checkout2', 'transaction_count', 'warning', 'Recuperação parcial', 4),
+            ]
+            
+            for item in sample_data:
+                conn.execute('''
+                    INSERT INTO monitoring_events (timestamp, source, event_type, severity, message, value)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''', item)
+            
+            conn.commit()
+        
+        # Carregar dados
+        df = pd.read_sql_query("SELECT * FROM monitoring_events ORDER BY timestamp", conn)
+        conn.close()
+        return df
+        
+    except Exception as e:
+        st.error(f"Erro ao acessar banco de monitoramento: {str(e)}")
+        return pd.DataFrame()
 
 # 🎨 Configuração da página (apenas quando executado individualmente)
 try:
@@ -49,36 +143,118 @@ except st.errors.StreamlitAPIException:
     # Já foi configurado pelo main.py
     pass
 
-# 📊 Carregar dados das tarefas anteriores
+# 📊 Carregar dados das tarefas anteriores usando SQLite
 @st.cache_data
 def load_integrated_data():
-    """Carrega dados de todas as tarefas para monitoramento integrado"""
+    """Carrega dados de todas as tarefas SQLite para monitoramento integrado"""
     data = {}
     
-    # Dados da Tarefa 1 (Analyze_data)
+    # Dados da Tarefa 1 (Analyze_data) - Bancos SQLite
     try:
-        data['checkout_1'] = pd.read_csv(get_data_path('../Analyze_data/data/checkout_1.csv'))
-        data['checkout_2'] = pd.read_csv(get_data_path('../Analyze_data/data/checkout_2.csv'))
-        data['transactions_analyze_1'] = pd.read_csv(get_data_path('../Analyze_data/data/transactions_1.csv'))
-        data['transactions_analyze_2'] = pd.read_csv(get_data_path('../Analyze_data/data/transactions_2.csv'))
+        # Carregando dados do data.db da Tarefa 1
+        db_path = get_db_path('data.db', '../Analyze_data')
+        if db_path:
+            conn = sqlite3.connect(db_path)
+            
+            # Tabelas do data.db
+            query = "SELECT * FROM data_table"
+            data['analyze_data_table'] = pd.read_sql_query(query, conn)
+            
+            try:
+                query = "SELECT * FROM data_table_1"
+                data['analyze_data_table_1'] = pd.read_sql_query(query, conn)
+            except Exception:
+                st.info("Tabela data_table_1 não encontrada no data.db")
+            
+            try:
+                query = "SELECT * FROM data_table_2"
+                data['analyze_data_table_2'] = pd.read_sql_query(query, conn)
+            except Exception:
+                st.info("Tabela data_table_2 não encontrada no data.db")
+            
+            conn.close()
         
-    except FileNotFoundError:
-        st.warning("⚠️ Dados da Tarefa 1 não encontrados. Usando dados locais.")
-        data['checkout_1'] = pd.DataFrame()
-        data['checkout_2'] = pd.DataFrame()
+        # Carregando dados do data1.db
+        db1_path = get_db_path('data1.db', '../Analyze_data')
+        if db1_path:
+            conn = sqlite3.connect(db1_path)
+            try:
+                query = "SELECT * FROM data_table"
+                data['analyze_data1'] = pd.read_sql_query(query, conn)
+            except Exception:
+                pass
+            conn.close()
+        
+        # Carregando dados do data2.db
+        db2_path = get_db_path('data2.db', '../Analyze_data')
+        if db2_path:
+            conn = sqlite3.connect(db2_path)
+            try:
+                query = "SELECT * FROM data_table"
+                data['analyze_data2'] = pd.read_sql_query(query, conn)
+            except Exception:
+                pass
+            conn.close()
+            
+    except Exception as e:
+        st.warning(f"⚠️ Erro ao carregar dados SQLite da Tarefa 1: {str(e)}")
     
-    # Dados da Tarefa 2 (Alert_Incident)
+    # Dados da Tarefa 2 (Alert_Incident) - usando CSV como fallback
     try:
-        data['alert_transactions_1'] = pd.read_csv(get_data_path('../Alert_Incident/data/transactions_1.csv'))
-        data['alert_transactions_2'] = pd.read_csv(get_data_path('../Alert_Incident/data/transactions_2.csv'))
-    except FileNotFoundError:
-        st.warning("⚠️ Dados da Tarefa 2 não encontrados. Usando dados locais.")
+        # Verificar se existe banco SQLite na Tarefa 2
+        alert_db_path = get_db_path('database.db', '../Alert_Incident')
+        if alert_db_path:
+            conn = sqlite3.connect(alert_db_path)
+            try:
+                query = "SELECT * FROM transactions"
+                data['alert_transactions'] = pd.read_sql_query(query, conn)
+            except Exception:
+                # Fallback para CSV se não houver tabela
+                path1 = '../Alert_Incident/data/transactions_1.csv'
+                path2 = '../Alert_Incident/data/transactions_2.csv'
+                data['alert_transactions_1'] = pd.read_csv(
+                    get_data_path(path1))
+                data['alert_transactions_2'] = pd.read_csv(
+                    get_data_path(path2))
+            conn.close()
+        else:
+            # Usar CSV se não houver banco SQLite
+            path1 = '../Alert_Incident/data/transactions_1.csv'
+            path2 = '../Alert_Incident/data/transactions_2.csv'
+            data['alert_transactions_1'] = pd.read_csv(get_data_path(path1))
+            data['alert_transactions_2'] = pd.read_csv(get_data_path(path2))
+    except Exception as e:
+        st.warning(f"⚠️ Erro ao carregar dados da Tarefa 2: {str(e)}")
     
-    # Dados locais (Monitoring)
+    # Dados locais (Monitoring) - database.db local
     try:
-        data['monitoring_transactions'] = pd.read_csv(get_data_path('data/transactions_1.csv'))
-    except FileNotFoundError:
-        st.error("❌ Dados de monitoramento não encontrados!")
+        db_path = get_db_path('database.db')
+        if db_path:
+            conn = sqlite3.connect(db_path)
+            try:
+                query = "SELECT * FROM transactions"
+                data['monitoring_transactions'] = pd.read_sql_query(
+                    query, conn)
+            except Exception:
+                # Criar tabela se não existir
+                conn.execute('''
+                    CREATE TABLE IF NOT EXISTS transactions (
+                        id INTEGER PRIMARY KEY,
+                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        amount REAL,
+                        status TEXT,
+                        source TEXT
+                    )
+                ''')
+                conn.commit()
+                data['monitoring_transactions'] = pd.DataFrame()
+            conn.close()
+        else:
+            # Fallback para CSV se não houver banco local
+            path = 'data/transactions_1.csv'
+            data['monitoring_transactions'] = pd.read_csv(get_data_path(path))
+    except Exception as e:
+        st.error(f"❌ Erro ao carregar dados de monitoramento: {str(e)}")
         data['monitoring_transactions'] = pd.DataFrame()
     
     return data
@@ -147,10 +323,10 @@ def analyze_integrated_data(data):
 st.markdown("""
 <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(0,0,0,0.1);'>
     <h1 style='color: white; text-align: center; margin: 0; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'>
-        📊 Central de Monitoramento Integrado
+        📊 Central de Monitoramento SQLite
     </h1>
     <p style='color: rgba(255,255,255,0.9); text-align: center; margin: 0.5rem 0 0 0; font-size: 1.3rem;'>
-        Monitoramento Unificado das Tarefas 1, 2 e 3
+        Monitoramento Unificado com Bancos de Dados SQLite
     </p>
 </div>
 """, unsafe_allow_html=True)
