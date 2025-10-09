@@ -107,29 +107,6 @@ monitoring-analyst-test/
         └── transactions_1.csv
 ```
 
----
-├── requirements.txt
-├── .venv/                    # Ambiente virtual
-├── Analyze_data/            # 📊 TAREFA 1
-│   ├── app.py
-│   ├── data.db
-│   └── data/
-│       ├── checkout_1.csv
-│       ├── checkout_2.csv
-│       ├── transactions_1.csv
-│       └── transactions_2.csv
-├── Alert_Incident/          # 🚨 TAREFA 2  
-│   ├── app.py
-│   └── data/
-│       ├── transactions_1.csv
-│       └── transactions_2.csv
-└── Monitoring/              # 📱 TAREFA 3
-    ├── app.py
-    ├── credenciais.py
-    ├── database.db
-    ├── models.py
-    └── data/
-        └── transactions_1.csv
 ```
 
 ## 📊 TAREFA 1: Análise Avançada de Transações
