@@ -32,6 +32,7 @@ def get_data_path(filename):
     # Se nada funcionar, retorna o caminho original para mostrar o erro
     return filename
 
+
 # Load CSV files
 df1 = pd.read_csv(get_data_path("data/checkout_1.csv"))
 df2 = pd.read_csv(get_data_path("data/checkout_2.csv"))
@@ -64,16 +65,20 @@ conn2.close()
 results_df1['time_numeric'] = results_df1['time'].str.replace('h', '').astype(int)
 results_df2['time_numeric'] = results_df2['time'].str.replace('h', '').astype(int)
 
-# 🎨 CONFIGURAÇÃO DO LAYOUT
-st.set_page_config(
-    page_title="📊 Análise de Transações",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# 🎨 Configuração da página (apenas quando executado individualmente)
+try:
+    st.set_page_config(
+        page_title="📊 Análise de Transações",
+        page_icon="📊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except st.errors.StreamlitAPIException:
+    # Já foi configurado pelo main.py
+    pass
 
 # 🎯 TÍTULO PRINCIPAL
-st.title("📊 Análise Avançada de Transações")
+# st.title("📊 Análise Avançada de Transações")
 st.markdown("---")
 
 # 🎛️ SIDEBAR PARA CONTROLES
@@ -428,14 +433,14 @@ with col2:
 with col3:
     st.metric(
         label="⏰ Pico Checkout 1",
-        value=f"{checkout1_max_hour}h",
+        value=f"{checkout1_max_hour}",
         delta="Horário normal"
     )
 
 with col4:
     st.metric(
         label="⏰ Pico Checkout 2",
-        value=f"{checkout2_max_hour}h",
+        value=f"{checkout2_max_hour}",
         delta="Verificar anomalia"
     )
 
@@ -470,7 +475,6 @@ fig_heatmap = go.Figure(data=go.Heatmap(
                   '<extra></extra>',
     colorbar=dict(
         title="Transações",
-        titleside="right"
     )
 ))
 

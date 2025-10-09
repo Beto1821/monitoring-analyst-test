@@ -7,12 +7,50 @@ import numpy as np
 from datetime import datetime, timedelta
 import sqlite3
 import os
-import sys
 
-# 🎨 Configuração da página
+
+# 🎨 Configuração dinâmica da página baseada na rota
+# Obter rota atual primeiro (antes de qualquer widget)
+
+# Função para obter query params manualmente se necessário
+def get_current_route():
+    try:
+        query_params = st.query_params
+        return query_params.get("page", "home")
+    except Exception:
+        return "home"
+
+
+# Definir configurações por rota
+route_configs = {
+    "home": {
+        "title": " Monitoring Analyst Test - Sistema Completo",
+        "icon": "🏠"
+    },
+    "task1": {
+        "title": " Análise Avançada de Transações",
+        "icon": "📊"
+    },
+    "task2": {
+        "title": " Sistema de Alertas e Incidentes", 
+        "icon": "🚨"
+    },
+    "task3": {
+        "title": " Central de Monitoramento Integrado",
+        "icon": "📱"
+    }
+}
+
+# Obter rota atual
+current_route = get_current_route()
+if current_route not in route_configs:
+    current_route = "home"
+
+# Configurar página com base na rota atual
+config = route_configs[current_route]
 st.set_page_config(
-    page_title="📊 Monitoring Analyst Test - Sistema Completo",
-    page_icon="📊",
+    page_title=config["title"],
+    page_icon=config["icon"],
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -81,17 +119,25 @@ st.markdown("""
 st.sidebar.title("🎮 Navegação")
 st.sidebar.markdown("---")
 
-# Definir rotas disponíveis
+# Definir rotas disponíveis (sem ícones para evitar duplicação)
 routes = {
-    "home": "🏠 Página Inicial",
-    "task1": "📊 Tarefa 1: Análise Avançada de Transações",
-    "task2": "🚨 Tarefa 2: Sistema de Alertas e Incidentes",
-    "task3": "📱 Tarefa 3: Central de Monitoramento Integrado"
+    "home": "Página Inicial",
+    "task1": "Tarefa 1: Análise Avançada de Transações",
+    "task2": "Tarefa 2: Sistema de Alertas e Incidentes",
+    "task3": "Tarefa 3: Central de Monitoramento Integrado"
 }
 
-# Obter rota atual dos query parameters (usando API compatível)
-query_params = st.experimental_get_query_params()
-current_route = query_params.get("page", ["home"])[0]
+# Ícones para cada rota
+route_icons = {
+    "home": "🏠",
+    "task1": "📊",
+    "task2": "🚨",
+    "task3": "📱"
+}
+
+# Obter rota atual dos query parameters (usando API atual)
+query_params = st.query_params
+current_route = query_params.get("page", "home")
 
 # Validar rota
 if current_route not in routes:
@@ -110,19 +156,19 @@ try:
 except ValueError:
     current_index = 0
 
-# Radio button para seleção
+# Radio button para seleção (combinando ícone + texto)
 selected_index = st.sidebar.radio(
     "Selecione a página:",
     range(len(route_options)),
-    format_func=lambda x: route_labels[x],
+    format_func=lambda x: f"{route_icons[route_options[x]]} {route_labels[x]}",
     index=current_index,
     label_visibility="collapsed"
 )
 
 # Atualizar query params se mudou
 if selected_index != current_index:
-    st.experimental_set_query_params(page=route_options[selected_index])
-    st.experimental_rerun()
+    st.query_params["page"] = route_options[selected_index]
+    st.rerun()
 
 st.sidebar.markdown("---")
 
@@ -137,12 +183,11 @@ st.sidebar.markdown(f"""
 """)
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### �📋 Informações do Sistema")
+st.sidebar.markdown("### ��📋 Informações do Sistema")
 st.sidebar.info("✅ Sistema com navegação por rotas URL")
 
 # Definir página atual baseada na rota selecionada
 current_route = route_options[selected_index]
-page = routes[current_route]
 
 
 # Função para carregar módulos de forma segura
@@ -185,7 +230,7 @@ def load_task_safely(task_path, task_name):
         return False
 
 
-if page == "🏠 Página Inicial":
+if current_route == "home":
     # 🏠 PÁGINA INICIAL
     st.header("🏠 Bem-vindo ao Sistema de Monitoramento")
     
@@ -307,17 +352,17 @@ if page == "🏠 Página Inicial":
     - Para funcionalidade completa, execute localmente: `streamlit run main.py`
     """)
 
-elif page == "📊 Tarefa 1: Análise Avançada de Transações":
+elif current_route == "task1":
     # 📊 TAREFA 1
     st.header("📊 Análise Avançada de Transações")
     load_task_safely('Analyze_data/app.py', 'Tarefa 1')
 
-elif page == "🚨 Tarefa 2: Sistema de Alertas e Incidentes":
+elif current_route == "task2":
     # 🚨 TAREFA 2
     st.header("🚨 Sistema de Alertas e Incidentes")
     load_task_safely('Alert_Incident/app.py', 'Tarefa 2')
 
-elif page == "📱 Tarefa 3: Central de Monitoramento Integrado":
+elif current_route == "task3":
     # 📱 TAREFA 3
     st.header("📱 Central de Monitoramento Integrado")
     load_task_safely('Monitoring/app.py', 'Tarefa 3')

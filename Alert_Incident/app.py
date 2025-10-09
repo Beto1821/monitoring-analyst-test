@@ -3,8 +3,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
-import numpy as np
-from datetime import datetime
 import os
 
 # 🎨 Configuração da página (apenas quando executado individualmente)
@@ -43,11 +41,22 @@ def get_data_path(filename):
 # 📊 Carregar os dados
 @st.cache_data
 def load_data():
-    df1 = pd.read_csv(get_data_path('data/transactions_1.csv'))
-    df2 = pd.read_csv(get_data_path('data/transactions_2.csv'))
-    return df1, df2
+    try:
+        df1 = pd.read_csv(get_data_path('data/transactions_1.csv'))
+        df2 = pd.read_csv(get_data_path('data/transactions_2.csv'))
+        return df1, df2
+    except Exception as e:
+        st.error(f"Erro ao carregar dados: {str(e)}")
+        return pd.DataFrame(), pd.DataFrame()
 
+# Carregar dados
 df1, df2 = load_data()
+
+# Verificar se os dados foram carregados corretamente
+if df1.empty or df2.empty:
+    st.error("❌ Erro: Não foi possível carregar os dados das transações!")
+    st.info("Verifique se os arquivos transactions_1.csv e transactions_2.csv estão na pasta data/")
+    st.stop()
 
 # 🎨 Header com estilo
 st.markdown("""
