@@ -1,15 +1,14 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import streamlit as st
 import sqlite3
 import plotly.graph_objects as go
-import plotly.express as px
 from plotly.subplots import make_subplots
-import numpy as np
 import os
 
-# Disable warning for st.pyplot() - option deprecated in newer Streamlit versions
+# Disable warning for st.pyplot()
+# option deprecated in newer Streamlit versions
 # st.set_option('deprecation.showPyplotGlobalUse', False)
+
 
 # Função para detectar o caminho correto dos dados
 def get_data_path(filename):

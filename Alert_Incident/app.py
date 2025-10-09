@@ -17,6 +17,7 @@ except st.errors.StreamlitAPIException:
     # Já foi configurado pelo main.py
     pass
 
+
 # Função para detectar o caminho correto dos dados
 def get_data_path(filename):
     """Detecta o caminho correto dos arquivos de dados"""
@@ -28,15 +29,16 @@ def get_data_path(filename):
     alert_path = os.path.join("Alert_Incident", filename)
     if os.path.exists(alert_path):
         return alert_path
-    
+
     # Caminho absoluto como fallback
     current_dir = os.path.dirname(os.path.abspath(__file__))
     abs_path = os.path.join(current_dir, filename)
     if os.path.exists(abs_path):
         return abs_path
-    
+
     # Se nada funcionar, retorna o caminho original para mostrar o erro
     return filename
+
 
 # 📊 Carregar os dados
 @st.cache_data
