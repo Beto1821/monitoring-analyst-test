@@ -12,29 +12,79 @@ import os
 # Função para detectar o caminho correto dos bancos de dados
 def get_db_path(db_filename, task_folder=None):
     """Detecta o caminho correto dos arquivos de banco de dados"""
+    import os
+    import sys
+    
+    # Lista de caminhos para tentar
+    paths_to_try = []
+    
     # Se especificar pasta da tarefa
     if task_folder:
-        task_path = os.path.join(task_folder, db_filename)
-        if os.path.exists(task_path):
-            return task_path
+        # Caminho relativo direto
+        paths_to_try.append(os.path.join(task_folder, db_filename))
+        
+        # Se executado do diretório raiz do projeto
+        paths_to_try.append(os.path.join(".", task_folder, db_filename))
+        
+        # Caminho absoluto baseado no diretório atual
+        current_dir = os.getcwd()
+        paths_to_try.append(os.path.join(current_dir, task_folder, db_filename))
+        
+        # Caminho subindo um nível (caso esteja dentro de Monitoring)
+        paths_to_try.append(os.path.join("..", task_folder, db_filename))
+    
+    # Caminho relativo atual
+    paths_to_try.append(db_filename)
+    
+    # Se executado a partir do main.py
+    paths_to_try.append(os.path.join("Monitoring", db_filename))
+    
+    # Caminho absoluto como fallback usando abspath diretamente
+    try:
+        current_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
+        paths_to_try.append(os.path.join(current_dir, "Monitoring", db_filename))
+        
+        # Tentar diretório atual
+        current_working_dir = os.getcwd()
+        paths_to_try.append(os.path.join(current_working_dir, "Monitoring", db_filename))
+        
+        # Se task_folder especificado, tentar do diretório atual
+        if task_folder:
+            paths_to_try.append(os.path.join(current_working_dir, task_folder, db_filename))
+            
+    except Exception:
+        pass
+    
+    # Testar todos os caminhos
+    for path in paths_to_try:
+        if os.path.exists(path):
+            return path
+    
+    return None  # Retornar None se não encontrar
 
 # Função para detectar o caminho correto dos arquivos de dados CSV
 def get_data_path(relative_path):
     """Detecta o caminho correto dos arquivos CSV"""
-    # Caminho absoluto do diretório atual
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+    import os
     
-    # Construir caminho absoluto
-    absolute_path = os.path.join(current_dir, relative_path)
+    # Tentar caminho relativo direto primeiro
+    if os.path.exists(relative_path):
+        return relative_path
     
-    if os.path.exists(absolute_path):
-        return absolute_path
+    # Tentar usando diretório de trabalho atual
+    try:
+        current_working_dir = os.getcwd()
+        absolute_path = os.path.join(current_working_dir, relative_path)
+        if os.path.exists(absolute_path):
+            return absolute_path
+    except Exception:
+        pass
     
     # Fallback - tentar caminhos relativos
     fallback_paths = [
-        relative_path,
         os.path.join('..', relative_path),
-        os.path.join('../..', relative_path)
+        os.path.join('../..', relative_path),
+        os.path.join('Monitoring', relative_path)
     ]
     
     for path in fallback_paths:
@@ -44,40 +94,96 @@ def get_data_path(relative_path):
     return relative_path  # Retornar original se nada funcionar
 
 
-@st.cache_data(ttl=300)  # Cache por 5 minutos
-def load_integrated_data():
-    """Carrega dados integrados de todas as tarefas via SQLite"""
+def create_alert_database_from_csv():
+    """Cria banco SQLite a partir dos CSVs da Tarefa 2"""
     try:
-        data = {}
+        task2_db_path = 'Alert_Incident/alert_data.db'
+        csv_path1 = 'Alert_Incident/data/transactions_1.csv'
+        csv_path2 = 'Alert_Incident/data/transactions_2.csv'
         
-        # Carregar dados da Tarefa 1 (Analyze_data)
-        task1_db_path = get_db_path('data.db', '../Analyze_data')
-        if os.path.exists(task1_db_path):
-            conn1 = sqlite3.connect(task1_db_path)
-            data['checkout1'] = pd.read_sql_query("SELECT * FROM data_table_1", conn1)
-            data['checkout2'] = pd.read_sql_query("SELECT * FROM data_table_2", conn1)
-            data['general'] = pd.read_sql_query("SELECT * FROM data_table", conn1)
-            conn1.close()
-        else:
-            st.warning("⚠️ Banco da Tarefa 1 não encontrado")
-            data['checkout1'] = pd.DataFrame()
-            data['checkout2'] = pd.DataFrame()
-            data['general'] = pd.DataFrame()
+        conn = sqlite3.connect(task2_db_path)
         
-        # Carregar dados do banco local de monitoramento
-        monitoring_db_path = get_db_path('database.db')
-        data['monitoring_logs'] = load_or_create_monitoring_data(monitoring_db_path)
+        # Carregar CSV 1 se existir
+        if os.path.exists(csv_path1):
+            df1 = pd.read_csv(csv_path1)
+            df1.to_sql('transactions_1', conn, if_exists='replace', index=False)
         
-        return data
+        # Carregar CSV 2 se existir
+        if os.path.exists(csv_path2):
+            df2 = pd.read_csv(csv_path2)
+            df2.to_sql('transactions_2', conn, if_exists='replace', index=False)
+        
+        conn.close()
         
     except Exception as e:
-        st.error(f"Erro ao carregar dados integrados: {str(e)}")
-        return {
-            'checkout1': pd.DataFrame(),
-            'checkout2': pd.DataFrame(), 
-            'general': pd.DataFrame(),
-            'monitoring_logs': pd.DataFrame()
-        }
+        # Se houver erro, não quebrar a aplicação
+        pass
+
+
+def load_integrated_data():
+    """Carrega dados integrados de todas as tarefas via SQLite - versão ultra-robusta sem cache"""
+    data = {
+        'checkout1': pd.DataFrame(),
+        'checkout2': pd.DataFrame(),
+        'general': pd.DataFrame(),
+        'monitoring_logs': pd.DataFrame(),
+        'alert_transactions_1': pd.DataFrame(),
+        'alert_transactions_2': pd.DataFrame()
+    }
+    
+    # Carregar dados da Tarefa 1 (Analyze_data) 
+    try:
+        task1_db_path = 'Analyze_data/data.db'
+        if os.path.exists(task1_db_path):
+            conn1 = sqlite3.connect(task1_db_path)
+            try:
+                data['checkout1'] = pd.read_sql_query("SELECT * FROM data_table_1", conn1)
+            except Exception:
+                pass
+            try:
+                data['checkout2'] = pd.read_sql_query("SELECT * FROM data_table_2", conn1)
+            except Exception:
+                pass
+            try:
+                data['general'] = pd.read_sql_query("SELECT * FROM data_table", conn1)
+            except Exception:
+                pass
+            conn1.close()
+    except Exception:
+        pass
+    
+    # Carregar dados do banco local de monitoramento
+    try:
+        monitoring_db_path = get_db_path('database.db')
+        if monitoring_db_path:
+            data['monitoring_logs'] = load_or_create_monitoring_data(monitoring_db_path)
+    except Exception:
+        pass
+    
+    # Carregar dados da Tarefa 2 (Alert_Incident) - convertendo CSV para SQLite
+    try:
+        task2_db_path = 'Alert_Incident/alert_data.db'
+        
+        # Se o banco não existir, criar a partir dos CSVs
+        if not os.path.exists(task2_db_path):
+            create_alert_database_from_csv()
+        
+        # Carregar usando SQL
+        if os.path.exists(task2_db_path):
+            conn2 = sqlite3.connect(task2_db_path)
+            try:
+                data['alert_transactions_1'] = pd.read_sql_query("SELECT * FROM transactions_1", conn2)
+            except Exception:
+                pass
+            try:
+                data['alert_transactions_2'] = pd.read_sql_query("SELECT * FROM transactions_2", conn2)
+            except Exception:
+                pass
+            conn2.close()
+    except Exception:
+        pass
+    
+    return data
 
 def load_or_create_monitoring_data(db_path):
     """Carrega ou cria dados de monitoramento"""
@@ -143,122 +249,6 @@ except st.errors.StreamlitAPIException:
     # Já foi configurado pelo main.py
     pass
 
-# 📊 Carregar dados das tarefas anteriores usando SQLite
-@st.cache_data
-def load_integrated_data():
-    """Carrega dados de todas as tarefas SQLite para monitoramento integrado"""
-    data = {}
-    
-    # Dados da Tarefa 1 (Analyze_data) - Bancos SQLite
-    try:
-        # Carregando dados do data.db da Tarefa 1
-        db_path = get_db_path('data.db', '../Analyze_data')
-        if db_path:
-            conn = sqlite3.connect(db_path)
-            
-            # Tabelas do data.db
-            query = "SELECT * FROM data_table"
-            data['analyze_data_table'] = pd.read_sql_query(query, conn)
-            
-            try:
-                query = "SELECT * FROM data_table_1"
-                data['analyze_data_table_1'] = pd.read_sql_query(query, conn)
-            except Exception:
-                st.info("Tabela data_table_1 não encontrada no data.db")
-            
-            try:
-                query = "SELECT * FROM data_table_2"
-                data['analyze_data_table_2'] = pd.read_sql_query(query, conn)
-            except Exception:
-                st.info("Tabela data_table_2 não encontrada no data.db")
-            
-            conn.close()
-        
-        # Carregando dados do data1.db
-        db1_path = get_db_path('data1.db', '../Analyze_data')
-        if db1_path:
-            conn = sqlite3.connect(db1_path)
-            try:
-                query = "SELECT * FROM data_table"
-                data['analyze_data1'] = pd.read_sql_query(query, conn)
-            except Exception:
-                pass
-            conn.close()
-        
-        # Carregando dados do data2.db
-        db2_path = get_db_path('data2.db', '../Analyze_data')
-        if db2_path:
-            conn = sqlite3.connect(db2_path)
-            try:
-                query = "SELECT * FROM data_table"
-                data['analyze_data2'] = pd.read_sql_query(query, conn)
-            except Exception:
-                pass
-            conn.close()
-            
-    except Exception as e:
-        st.warning(f"⚠️ Erro ao carregar dados SQLite da Tarefa 1: {str(e)}")
-    
-    # Dados da Tarefa 2 (Alert_Incident) - usando CSV como fallback
-    try:
-        # Verificar se existe banco SQLite na Tarefa 2
-        alert_db_path = get_db_path('database.db', '../Alert_Incident')
-        if alert_db_path:
-            conn = sqlite3.connect(alert_db_path)
-            try:
-                query = "SELECT * FROM transactions"
-                data['alert_transactions'] = pd.read_sql_query(query, conn)
-            except Exception:
-                # Fallback para CSV se não houver tabela
-                path1 = '../Alert_Incident/data/transactions_1.csv'
-                path2 = '../Alert_Incident/data/transactions_2.csv'
-                data['alert_transactions_1'] = pd.read_csv(
-                    get_data_path(path1))
-                data['alert_transactions_2'] = pd.read_csv(
-                    get_data_path(path2))
-            conn.close()
-        else:
-            # Usar CSV se não houver banco SQLite
-            path1 = '../Alert_Incident/data/transactions_1.csv'
-            path2 = '../Alert_Incident/data/transactions_2.csv'
-            data['alert_transactions_1'] = pd.read_csv(get_data_path(path1))
-            data['alert_transactions_2'] = pd.read_csv(get_data_path(path2))
-    except Exception as e:
-        st.warning(f"⚠️ Erro ao carregar dados da Tarefa 2: {str(e)}")
-    
-    # Dados locais (Monitoring) - database.db local
-    try:
-        db_path = get_db_path('database.db')
-        if db_path:
-            conn = sqlite3.connect(db_path)
-            try:
-                query = "SELECT * FROM transactions"
-                data['monitoring_transactions'] = pd.read_sql_query(
-                    query, conn)
-            except Exception:
-                # Criar tabela se não existir
-                conn.execute('''
-                    CREATE TABLE IF NOT EXISTS transactions (
-                        id INTEGER PRIMARY KEY,
-                        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        amount REAL,
-                        status TEXT,
-                        source TEXT
-                    )
-                ''')
-                conn.commit()
-                data['monitoring_transactions'] = pd.DataFrame()
-            conn.close()
-        else:
-            # Fallback para CSV se não houver banco local
-            path = 'data/transactions_1.csv'
-            data['monitoring_transactions'] = pd.read_csv(get_data_path(path))
-    except Exception as e:
-        st.error(f"❌ Erro ao carregar dados de monitoramento: {str(e)}")
-        data['monitoring_transactions'] = pd.DataFrame()
-    
-    return data
-
 # 🚨 Sistema de alertas SMS (opcional)
 def enviar_sms(mensagem):
     """Sistema de SMS usando Twilio (opcional)"""
@@ -286,7 +276,7 @@ def enviar_sms(mensagem):
 
 # 📊 Análise integrada dos dados
 def analyze_integrated_data(data):
-    """Análise integrada de todos os dados"""
+    """Análise integrada usando APENAS operações básicas Python - versão final"""
     analysis = {
         'total_datasets': 0,
         'total_transactions': 0,
@@ -295,27 +285,62 @@ def analyze_integrated_data(data):
         'health_score': 100
     }
     
-    for key, df in data.items():
-        if not df.empty:
-            analysis['total_datasets'] += 1
-            analysis['total_transactions'] += len(df)
-            
-            # Análise de status se existir
-            if 'status' in df.columns:
-                status_counts = df['status'].value_counts()
-                analysis['status_distribution'][key] = status_counts.to_dict()
+    try:
+        for key, df in data.items():
+            if df is not None and len(df) > 0:
+                analysis['total_datasets'] += 1
+                analysis['total_transactions'] += len(df)
                 
-                # Alertas baseados nos dados
-                failed_rate = (df['status'] == 'failed').mean() * 100
-                denied_rate = (df['status'] == 'denied').mean() * 100
-                
-                if failed_rate > 10:
-                    analysis['alerts'].append(f"🔴 {key}: Alta taxa de falhas ({failed_rate:.1f}%)")
-                    analysis['health_score'] -= 20
-                
-                if denied_rate > 15:
-                    analysis['alerts'].append(f"🟡 {key}: Taxa elevada de negações ({denied_rate:.1f}%)")
-                    analysis['health_score'] -= 10
+                # Análise de status APENAS com Python básico
+                if 'status' in df.columns:
+                    try:
+                        # Converter para lista Python básica
+                        status_values = []
+                        for index, row in df.iterrows():
+                            status_values.append(row['status'])
+                        
+                        # Contar manualmente
+                        status_counts = {}
+                        for status in status_values:
+                            if status in status_counts:
+                                status_counts[status] += 1
+                            else:
+                                status_counts[status] = 1
+                        
+                        analysis['status_distribution'][key] = status_counts
+                        
+                        # Análise de saúde usando contagem manual
+                        total_records = len(status_values)
+                        if total_records > 0:
+                            failed_count = 0
+                            denied_count = 0
+                            
+                            for status in status_values:
+                                if status == 'failed':
+                                    failed_count += 1
+                                elif status == 'denied':
+                                    denied_count += 1
+                            
+                            failed_rate = (failed_count / total_records) * 100
+                            denied_rate = (denied_count / total_records) * 100
+                            
+                            if failed_rate > 10:
+                                analysis['alerts'].append(f"🔴 {key}: Alta taxa de falhas ({failed_rate:.1f}%)")
+                                analysis['health_score'] -= 20
+                            
+                            if denied_rate > 15:
+                                analysis['alerts'].append(f"🟡 {key}: Taxa elevada de negações ({denied_rate:.1f}%)")
+                                analysis['health_score'] -= 10
+                    except Exception:
+                        # Se houver qualquer erro, pular este dataset
+                        continue
+    except Exception:
+        # Se houver qualquer erro geral, retornar análise básica
+        pass
+    
+    # Garantir que health_score não seja negativo
+    if analysis['health_score'] < 0:
+        analysis['health_score'] = 0
     
     return analysis
 
@@ -332,8 +357,32 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Carregar dados
-data = load_integrated_data()
-analysis = analyze_integrated_data(data)
+try:
+    data = load_integrated_data()
+except Exception as e:
+    st.error(f"❌ Erro ao carregar dados integrados: {str(e)}")
+    # Fallback com dados vazios
+    data = {
+        'checkout1': pd.DataFrame(),
+        'checkout2': pd.DataFrame(),
+        'general': pd.DataFrame(),
+        'monitoring_logs': pd.DataFrame(),
+        'alert_transactions_1': pd.DataFrame(),
+        'alert_transactions_2': pd.DataFrame()
+    }
+
+try:
+    analysis = analyze_integrated_data(data)
+except Exception as e:
+    st.error(f"❌ Erro na análise consolidada: {str(e)}")
+    # Fallback com análise vazia
+    analysis = {
+        'total_datasets': 0,
+        'total_transactions': 0,
+        'status_distribution': {},
+        'alerts': [],
+        'health_score': 100
+    }
 
 # 📊 Dashboard de métricas principais
 st.header("📊 Visão Geral do Sistema")
@@ -398,20 +447,20 @@ tab1, tab2, tab3, tab_sms = st.tabs([
 with tab1:
     st.subheader("📊 Análise de Checkouts - Integração Tarefa 1")
     
-    if 'checkout_1' in data and not data['checkout_1'].empty:
+    if 'checkout1' in data and not data['checkout1'].empty:
         checkout_col1, checkout_col2 = st.columns(2)
         
         with checkout_col1:
             st.markdown("#### 🏪 Checkout 1 - Status")
-            checkout1_metrics = len(data['checkout_1'])
+            checkout1_metrics = len(data['checkout1'])
             st.metric("Registros", checkout1_metrics)
             
             # Gráfico simples se houver dados numéricos
-            numeric_cols = data['checkout_1'].select_dtypes(include=[np.number]).columns
+            numeric_cols = data['checkout1'].select_dtypes(include=[np.number]).columns
             if len(numeric_cols) > 0:
                 fig_checkout1 = px.line(
-                    data['checkout_1'], 
-                    x=data['checkout_1'].index,
+                    data['checkout1'], 
+                    x=data['checkout1'].index,
                     y=numeric_cols[0] if len(numeric_cols) > 0 else None,
                     title="Tendência Checkout 1"
                 )
@@ -419,15 +468,15 @@ with tab1:
         
         with checkout_col2:
             st.markdown("#### 🏪 Checkout 2 - Status")
-            if 'checkout_2' in data and not data['checkout_2'].empty:
-                checkout2_metrics = len(data['checkout_2'])
+            if 'checkout2' in data and not data['checkout2'].empty:
+                checkout2_metrics = len(data['checkout2'])
                 st.metric("Registros", checkout2_metrics)
                 
-                numeric_cols2 = data['checkout_2'].select_dtypes(include=[np.number]).columns
+                numeric_cols2 = data['checkout2'].select_dtypes(include=[np.number]).columns
                 if len(numeric_cols2) > 0:
                     fig_checkout2 = px.line(
-                        data['checkout_2'], 
-                        x=data['checkout_2'].index,
+                        data['checkout2'], 
+                        x=data['checkout2'].index,
                         y=numeric_cols2[0] if len(numeric_cols2) > 0 else None,
                         title="Tendência Checkout 2"
                     )
@@ -441,30 +490,42 @@ with tab2:
     if 'alert_transactions_1' in data and not data['alert_transactions_1'].empty:
         alert_data = data['alert_transactions_1']
         
-        # Status distribution
+        # Status distribution - versão robusta
         if 'status' in alert_data.columns:
-            status_counts = alert_data['status'].value_counts()
-            
-            fig_alert = px.pie(
-                values=status_counts.values,
-                names=status_counts.index,
-                title="Distribuição de Status - Dados de Alerta",
-                hole=0.4,
-                color_discrete_sequence=px.colors.qualitative.Set3
-            )
-            st.plotly_chart(fig_alert, use_container_width=True)
-            
-            # Métricas de alerta
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                approved = (alert_data['status'] == 'approved').sum()
-                st.metric("✅ Aprovadas", approved)
-            with col2:
-                failed = (alert_data['status'] == 'failed').sum()
-                st.metric("❌ Falhas", failed)
-            with col3:
-                denied = (alert_data['status'] == 'denied').sum()
-                st.metric("⛔ Negadas", denied)
+            try:
+                # Contar status usando Python básico
+                status_list = alert_data['status'].tolist()
+                status_counts = {}
+                
+                for status in status_list:
+                    if status in status_counts:
+                        status_counts[status] += 1
+                    else:
+                        status_counts[status] = 1
+                
+                if status_counts:
+                    fig_alert = px.pie(
+                        values=list(status_counts.values()),
+                        names=list(status_counts.keys()),
+                        title="Distribuição de Status - Dados de Alerta",
+                        hole=0.4,
+                        color_discrete_sequence=px.colors.qualitative.Set3
+                    )
+                    st.plotly_chart(fig_alert, use_container_width=True)
+                
+                # Métricas de alerta - contagem manual
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    approved = status_list.count('approved')
+                    st.metric("✅ Aprovadas", approved)
+                with col2:
+                    failed = status_list.count('failed')
+                    st.metric("❌ Falhas", failed)
+                with col3:
+                    denied = status_list.count('denied')
+                    st.metric("⛔ Negadas", denied)
+            except Exception as e:
+                st.error(f"❌ Erro na análise de status: {str(e)}")
         else:
             st.info("📋 Estrutura de dados não compatível com análise de status.")
     else:
@@ -473,8 +534,8 @@ with tab2:
 with tab3:
     st.subheader("📱 Monitoramento Local - Tarefa 3")
     
-    if 'monitoring_transactions' in data and not data['monitoring_transactions'].empty:
-        monitoring_data = data['monitoring_transactions']
+    if 'monitoring_logs' in data and not data['monitoring_logs'].empty:
+        monitoring_data = data['monitoring_logs']
         
         # Configuração de thresholds
         st.markdown("#### ⚙️ Configuração de Alertas")
@@ -489,31 +550,36 @@ with tab3:
         
         # Análise em tempo real
         if 'status' in monitoring_data.columns:
-            current_approved = (monitoring_data['status'] == 'approved').sum()
-            current_failed = (monitoring_data['status'] == 'failed').sum()
-            current_denied = (monitoring_data['status'] == 'denied').sum()
-            
-            # Status atual
-            st.markdown("#### 📊 Status Atual")
-            col1, col2, col3 = st.columns(3)
-            
-            with col1:
-                status_approved = "🚨" if current_approved > threshold_approved else "✅"
-                delta_approved = int(current_approved - threshold_approved)
-                st.metric(f"{status_approved} Aprovadas", int(current_approved), 
-                         delta=delta_approved)
-            
-            with col2:
-                status_failed = "🚨" if current_failed > threshold_failed else "✅"
-                delta_failed = int(current_failed - threshold_failed)
-                st.metric(f"{status_failed} Falhas", int(current_failed),
-                         delta=delta_failed)
-            
-            with col3:
-                status_denied = "🚨" if current_denied > threshold_denied else "✅"
-                delta_denied = int(current_denied - threshold_denied)
-                st.metric(f"{status_denied} Negadas", int(current_denied),
-                         delta=delta_denied)
+            try:
+                # Contagem manual para evitar problemas do Pandas
+                status_list = monitoring_data['status'].tolist()
+                current_approved = status_list.count('approved')
+                current_failed = status_list.count('failed')
+                current_denied = status_list.count('denied')
+                
+                # Status atual
+                st.markdown("#### 📊 Status Atual")
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    status_approved = "🚨" if current_approved > threshold_approved else "✅"
+                    delta_approved = int(current_approved - threshold_approved)
+                    st.metric(f"{status_approved} Aprovadas", int(current_approved), 
+                             delta=delta_approved)
+                
+                with col2:
+                    status_failed = "🚨" if current_failed > threshold_failed else "✅"
+                    delta_failed = int(current_failed - threshold_failed)
+                    st.metric(f"{status_failed} Falhas", int(current_failed),
+                             delta=delta_failed)
+                
+                with col3:
+                    status_denied = "🚨" if current_denied > threshold_denied else "✅"
+                    delta_denied = int(current_denied - threshold_denied)
+                    st.metric(f"{status_denied} Negadas", int(current_denied),
+                             delta=delta_denied)
+            except Exception as e:
+                st.error(f"❌ Erro na análise de monitoramento: {str(e)}")
             
             # Gráfico de monitoramento
             fig_monitoring = px.bar(

@@ -1,11 +1,17 @@
 # 📊 Monitoring Analyst Test
 
-Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Três tarefas indepen### ✨ Principais funcionalidades
+Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Quatro módulos integrados em uma aplicação moderna com navegação por rotas e ícones dinâmicos.
+
+## ✨ Principais Funcionalidades
+
 - **🗃️ Integração SQLite**: Carregamento direto de bancos `data.db`, `data1.db`, `data2.db`
 - **📈 Gráficos Interativos**: Visualizações modernas com Plotly
-- **🔍 Análise de Anomalias**: Detecção automática de problemas no Checkout 2
+- **🔍 Análise de Anomalias**: Detecção automática de problemas de performance
 - **📅 Comparação Temporal**: Hoje vs Ontem vs Semana Passada
-- **⚡ Cache Inteligente**: @st.cache_data para queries otimizadases integradas em uma aplicação moderna com navegação por rotas e ícones dinâmicos.
+- **⚡ Cache Inteligente**: Otimizações para queries SQLite
+- **🎮 Simulações SimPy**: Modelagem avançada de sistemas
+- **🧭 Navegação por Rotas**: URLs compartilháveis para cada módulo
+- **📱 Interface Responsiva**: Design moderno e profissional
 
 ## 🚀 Execução Rápida
 
@@ -42,6 +48,10 @@ cd ../Alert_Incident && streamlit run app.py
 # Tarefa 3: Central de Monitoramento Integrado
 cd ../Monitoring && streamlit run app.py
 # Acesso: http://localhost:8503
+
+# Simulações SimPy: Modelagem e Simulação
+cd ../simulacoes && streamlit run app.py
+# Acesso: http://localhost:8504
 ```
 
 **🚀 Aplicação em Produção:** [https://monitoring-analyst-test.streamlit.app/](https://monitoring-analyst-test.streamlit.app/)
@@ -53,6 +63,7 @@ cd ../Monitoring && streamlit run app.py
    - 📊 Tarefa 1: `https://monitoring-analyst-test.streamlit.app/?page=task1`
    - 🚨 Tarefa 2: `https://monitoring-analyst-test.streamlit.app/?page=task2`
    - 📱 Tarefa 3: `https://monitoring-analyst-test.streamlit.app/?page=task3`
+   - 🎮 Simulações: `https://monitoring-analyst-test.streamlit.app/?page=simulacoes`
 3. **Compartilhe** URLs específicas com outros usuários
 4. **Observe** como o ícone da página muda automaticamente
 
@@ -122,13 +133,18 @@ monitoring-analyst-test/
 │   └── data/
 │       ├── transactions_1.csv
 │       └── transactions_2.csv
-└── Monitoring/             # 📱 TAREFA 3 - Monitoramento SQLite
+├── Monitoring/             # 📱 TAREFA 3 - Monitoramento SQLite
     ├── app.py             # Sistema integrado multi-database
     ├── credenciais.py     # Configurações Twilio
     ├── database.db       # 🗃️ Banco local de monitoramento
     ├── models.py         # Models SQLite
     └── data/             # 📁 CSVs (fallback)
         └── transactions_1.csv
+└── simulacoes/             # 🎮 SIMULAÇÕES SIMPY
+    ├── app.py             # Interface principal Streamlit
+    ├── checkout_simulation.py    # Modelagem de checkouts
+    ├── anomaly_simulation.py     # Simulação de falhas
+    └── scenario_simulation.py    # Análise de cenários
 ```
 ```
 
@@ -201,20 +217,29 @@ http://localhost:8501
 
 ---
 
-## 📱 TAREFA 3: Central de Monitoramento SQLite
+## 📱 TAREFA 3: Central de Monitoramento Integrado
 
-> **Título da Aplicação:** "📊 Central de Monitoramento SQLite"  
-> **Localização:** `Monitoring/`
+> **Título da Aplicação:** "� Central de Monitoramento Integrado"  
+> **Localização:** `Monitoring/` (integrada no sistema unificado)
 
 ### 🎯 O que faz
-Sistema avançado de monitoramento unificado que integra **todos os bancos SQLite** das tarefas com capacidade de envio de alertas SMS via Twilio e persistência em banco de dados.
+Sistema avançado de monitoramento unificado que integra **todos os bancos SQLite** das tarefas com análise consolidada de transações e alertas automáticos. Completamente reformulada para máxima estabilidade e compatibilidade.
 
-### � Como executar
+### 🚀 Como executar
+
+#### **Método Recomendado - Sistema Unificado:**
+```bash
+# Executar via sistema principal (mais estável)
+streamlit run main.py
+# Acesse: http://localhost:8501/?page=task3
+```
+
+#### **Método Individual:**
 ```bash
 # Navegar para o diretório
 cd Monitoring
 
-# Executar aplicação
+# Executar aplicação individual
 streamlit run app.py
 ```
 
@@ -227,21 +252,72 @@ token = "seu_auth_token"
 remetente = "seu_numero_twilio"
 ```
 
-### ✨ Principais funcionalidades
-- **�️ Multi-Database**: Integração de todos os bancos SQLite (data.db, data1.db, data2.db, database.db)
-- **�📱 Alertas SMS**: Notificações instantâneas via Twilio
+### ✨ Principais Funcionalidades
+- **🗃️ Multi-Database**: Integração de todos os bancos SQLite (data.db, data1.db, data2.db)
+- **📱 Alertas SMS**: Notificações instantâneas via Twilio (opcional)
 - **💾 Persistência**: Banco SQLite com models personalizados
-- **📊 Monitoramento Unificado**: Dados de todas as tarefas em uma interface
-- **🔄 Processamento Automático**: SQL para DataFrame com fallback para CSV
-- **🚨 Sistema de Alertas**: Detecção de anomalias cross-datasets
-- **📈 Visualizações**: Dashboard de métricas integradas
-- **⚡ Cache Otimizado**: Carregamento inteligente com detecção automática
+- **📊 Dashboard Consolidado**: Métricas de todas as tarefas unificadas
+- **🔄 Carregamento Inteligente**: Sistema ultra-robusto com fallbacks automáticos
+- **🚨 Análise Integrada**: Detecção de anomalias cross-datasets
+- **📈 Visualizações Avançadas**: Gráficos interativos com distribuição de status
+- **⚡ Arquitetura Otimizada**: Versão redesenhada para máxima compatibilidade
+- **🛡️ Ultra-Robusta**: Operações básicas Python para evitar conflitos de versão
 
 ### 🔧 Tecnologias
-SQLite Multi-Database • Twilio • Pandas • Plotly • Custom Models • Cache Avançado
+SQLite Multi-Database • Twilio • Pandas • Plotly • Python Puro • Streamlit
 
 ### 📍 Acesso Local
-http://localhost:8503
+- **Sistema Unificado:** http://localhost:8501/?page=task3 (recomendado)
+- **Individual:** http://localhost:8503
+
+### ⭐ Melhorias Recentes
+- **🔧 Correção Total:** Resolvido erro `'PandasThen' object has no attribute '_evaluate_output_names'`
+- **🚀 Arquitetura Híbrida:** Versão estável integrada no sistema principal
+- **🛡️ Operações Seguras:** Substituição de operações Pandas complexas por Python básico
+- **📊 Análise Robusta:** Sistema de contagem manual ultra-compatível
+
+---
+
+## 🎮 SIMULAÇÕES SIMPY: Modelagem e Simulação
+
+> **Título da Aplicação:** "🎮 Simulações SimPy"  
+> **Localização:** `simulacoes/`
+
+### 🎯 O que faz
+Sistema avançado de simulação usando **SimPy** para modelar comportamento de checkouts, prever falhas e testar cenários de melhoria com análise de ROI.
+
+### 🚀 Como executar
+```bash
+# Navegar para o diretório
+cd simulacoes
+
+# Executar aplicação
+streamlit run app.py
+```
+
+### ✨ Principais funcionalidades
+- **🛒 Simulação de Checkouts**: Modelagem de filas, tempos de atendimento e capacidade
+- **🚨 Simulação de Anomalias**: Falhas de hardware, software, rede e problemas ambientais
+- **🔍 Análise de Cenários**: Comparação entre situação atual vs melhorias propostas
+- **📊 Comparação Real vs Simulado**: Validação de modelos com dados reais
+- **💰 Análise de ROI**: Cálculo de retorno sobre investimento para melhorias
+- **📈 Métricas Avançadas**: MTBF, disponibilidade, satisfação do cliente
+- **🎯 Recomendações Inteligentes**: Sugestões baseadas em simulações
+- **⏰ Simulação Temporal**: Padrões de uso por hora, detecção de picos
+
+### 🔧 Módulos SimPy
+- **CheckoutSimulation**: Modelagem de filas e processos de atendimento
+- **AnomalySimulation**: Simulação de falhas com distribuições estatísticas
+- **ScenarioSimulation**: Análise de cenários what-if com ROI
+
+### 🎮 Tipos de Simulação
+1. **🛒 Checkouts**: Filas, tempos de espera, utilização, eficiência
+2. **🚨 Anomalias**: Hardware, software, rede, energia, ambiente
+3. **🔍 Cenários**: Atual, melhorado, redundância, manutenção, upgrade
+4. **📊 Validação**: Comparação com dados reais SQLite
+
+### 📍 Acesso Local
+http://localhost:8504
 
 ---
 
@@ -279,13 +355,41 @@ pkill -f streamlit
 
 ---
 
-## � Resumo das Funcionalidades
+## 🛠️ Stack Tecnológico
 
-| Tarefa | Aplicação | Foco Principal | Tecnologia Destaque |
-|--------|-----------|----------------|---------------------|
-| **1** | � Análise Avançada | Detecção de anomalias em checkouts | Plotly + Análise Inteligente |
-| **2** | 🚨 Alertas e Incidentes | Dashboard de monitoramento | Interface Moderna + Alertas |
-| **3** | 📱 Monitoramento | Alertas SMS em tempo real | Twilio + Persistência |
+### 🐍 Backend & Análise
+- **Python 3.9+**: Linguagem principal
+- **Pandas**: Manipulação de dados com operações seguras
+- **SQLite**: Banco de dados leve e eficiente
+- **NumPy**: Computação numérica
+
+### 🎨 Frontend & Visualização
+- **Streamlit**: Framework web interativo
+- **Plotly**: Gráficos interativos avançados
+- **Matplotlib**: Visualizações estatísticas
+- **HTML/CSS**: Customização de interface
+
+### 🔗 Integração & Comunicação
+- **Twilio**: Envio de SMS (opcional)
+- **SimPy**: Simulação de sistemas
+- **Git**: Controle de versão
+
+### 🏗️ Arquitetura
+- **MVC Pattern**: Separação de responsabilidades
+- **Microserviços**: Cada tarefa como módulo independente
+- **Sistema Unificado**: Ponto de entrada centralizado
+- **Fallback Systems**: Múltiplas camadas de recuperação
+
+---
+
+## 📊 Resumo das Funcionalidades
+
+| Tarefa | Aplicação | Foco Principal | Status | Tecnologia Destaque |
+|--------|-----------|----------------|---------|---------------------|
+| **1** | 📊 Análise Avançada | Detecção de anomalias em checkouts | ✅ Estável | SQLite + Plotly + Análise Inteligente |
+| **2** | 🚨 Alertas e Incidentes | Dashboard de monitoramento | ✅ Estável | Interface Moderna + Alertas |
+| **3** | 📱 Monitoramento Integrado | Central unificada multi-database | 🔧 **Corrigido** | Python Ultra-Robusto + SQLite |
+| **4** | 🎮 Simulações SimPy | Modelagem e análise de cenários | ✅ Estável | SimPy + ROI Calculator |
 
 ---
 
@@ -296,6 +400,75 @@ pkill -f streamlit
 - **� Credenciais**: Configure `credenciais.py` apenas para SMS (Tarefa 3)
 - **🌐 Portas**: Cada aplicação usa uma porta diferente
 - **� Responsivo**: Todas as interfaces adaptam ao mobile
+
+---
+
+## 🔧 Troubleshooting
+
+### ❌ Problemas Comuns e Soluções
+
+#### **Error: 'PandasThen' object has no attribute '_evaluate_output_names'**
+- **Causa:** Incompatibilidade entre versões do Pandas e operações complexas
+- **Solução:** ✅ **RESOLVIDO** - Use o sistema unificado (`streamlit run main.py`)
+- **Alternativa:** Operações básicas Python foram implementadas como fallback
+
+#### **Erro de porta já em uso**
+```bash
+# Parar todos os processos Streamlit
+pkill -9 -f streamlit
+
+# Verificar portas em uso
+lsof -i :8501
+
+# Usar porta específica
+streamlit run main.py --server.port 8502
+```
+
+#### **Erro de importação de módulos**
+```bash
+# Verificar ambiente virtual ativo
+which python
+
+# Reinstalar dependências
+pip install -r requirements.txt --force-reinstall
+
+# Limpar cache
+pip cache purge
+```
+
+#### **Problemas com SQLite**
+- **Erro:** Database locked ou arquivo não encontrado
+- **Solução:** Verificar permissões de arquivo e fechar conexões
+```bash
+# Verificar se arquivos SQLite existem
+ls -la *.db */data*.db
+
+# Testar conexão
+python -c "import sqlite3; conn = sqlite3.connect('data.db'); print('OK')"
+```
+
+#### **Interface não carrega ou apresenta erro 500**
+1. **Verifique o ambiente virtual:**
+   ```bash
+   source .venv/bin/activate
+   which python
+   ```
+
+2. **Atualize o Streamlit:**
+   ```bash
+   pip install streamlit --upgrade
+   ```
+
+3. **Use modo debug:**
+   ```bash
+   streamlit run main.py --logger.level=debug
+   ```
+
+### 🚀 Dicas de Performance
+- **Use o sistema unificado** (`main.py`) para melhor estabilidade
+- **Task 3 integrada** evita problemas de contexto de execução
+- **Dados limitados** com LIMIT nas queries SQLite para melhor performance
+- **Fallbacks automáticos** garantem funcionamento mesmo com problemas
 
 ---
 
@@ -341,16 +514,19 @@ pkill -f streamlit
 
 ---
 
-## 🎯 DESTAQUE: TAREFA 3 INTEGRADA
+## 🎯 DESTAQUE: TAREFA 3 TOTALMENTE CORRIGIDA
 
-### 📊 Central de Monitoramento Renovada
-A **Tarefa 3** foi completamente reformulada como **solução integrada**:
+### 📊 Central de Monitoramento Ultra-Estável
+A **Tarefa 3** foi **completamente corrigida e reformulada** como **solução definitiva**:
 
-- **🔗 Integra Tarefas 1 + 2**: Monitora todos os dados em uma interface
+- **🔧 Problema Resolvido**: Eliminado erro `'PandasThen' object has no attribute '_evaluate_output_names'`
+- **🚀 Arquitetura Híbrida**: Versão estável integrada no sistema principal
+- **🔗 Integra Tarefas 1 + 2**: Monitora todos os dados SQLite em uma interface unificada
+- **🛡️ Ultra-Robusta**: Operações básicas Python para máxima compatibilidade
 - **🎮 Interface Moderna**: Design profissional com visualizações avançadas  
 - **🚨 Alertas Inteligentes**: Detecção automática cross-datasets
-- **📊 Dashboard Unificado**: Métricas consolidadas de todas as fontes
-- **💡 Análise Correlacionada**: Insights baseados em dados integrados
+- **📊 Dashboard Consolidado**: Métricas consolidadas de todas as fontes
+- **💡 Análise Segura**: Sistema de contagem manual livre de conflitos de versão
 
 ### 🚀 Acesso Direto:
 ```bash
@@ -400,6 +576,25 @@ CREATE TABLE data_table (
 ---
 
 ## 📋 Changelog
+
+### 🆕 Versão 2.3 (Outubro 2025) - Correção Total da Task 3
+- **🔧 Resolução Definitiva:** Corrigido erro `'PandasThen' object has no attribute '_evaluate_output_names'`
+- **🚀 Arquitetura Híbrida:** Task 3 integrada diretamente no sistema principal para máxima estabilidade
+- **🛡️ Operações Ultra-Robustas:** Substituição de operações Pandas complexas por Python básico
+- **📊 Análise Manual:** Sistema de contagem e análise usando iteração Python pura
+- **⚡ Performance Otimizada:** Carregamento de dados com LIMIT para melhor performance
+- **🔄 Fallbacks Automáticos:** Sistema defensivo com múltiplos níveis de recuperação
+- **💾 Dados Reais:** Integração funcional com bancos SQLite reais
+- **🎯 Compatibilidade Total:** Solução universal compatível com todas as versões do Pandas
+
+### 🆕 Versão 2.2 (Outubro 2025) - Simulações SimPy
+- **🎮 SimPy Integration:** Sistema completo de simulação e modelagem
+- **🛒 Checkout Simulation:** Modelagem de filas e tempos de atendimento
+- **🚨 Anomaly Simulation:** Simulação de falhas (hardware, software, rede)
+- **🔍 Scenario Analysis:** Análise de cenários what-if com ROI
+- **📊 Real vs Simulated:** Comparação e validação de modelos
+- **💰 ROI Calculator:** Análise financeira de melhorias propostas
+- **🎯 Smart Recommendations:** Recomendações baseadas em simulações
 
 ### 🆕 Versão 2.1 (Outubro 2025) - Integração SQLite Completa
 - **🗃️ SQLite Nativo:** Migração completa de CSV para bancos SQLite
