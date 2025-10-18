@@ -1,28 +1,52 @@
 # 📊 Monitoring Analyst Test
 
-Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. Quatro módulos integrados em uma aplicação moderna com navegação por rotas e ícones dinâmicos.
+Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. **Quatro módulos integrados** em uma aplicação moderna com navegação por rotas, simulações SimPy e análise preditiva.
 
 ## ✨ Principais Funcionalidades
 
+### 🎯 **Sistema Principal**
 - **🗃️ Integração SQLite**: Carregamento direto de bancos `data.db`, `data1.db`, `data2.db`
 - **📈 Gráficos Interativos**: Visualizações modernas com Plotly
 - **🔍 Análise de Anomalias**: Detecção automática de problemas de performance
 - **📅 Comparação Temporal**: Hoje vs Ontem vs Semana Passada
 - **⚡ Cache Inteligente**: Otimizações para queries SQLite
-- **🎮 Simulações SimPy**: Modelagem avançada de sistemas
 - **🧭 Navegação por Rotas**: URLs compartilháveis para cada módulo
 - **📱 Interface Responsiva**: Design moderno e profissional
 
+### 🎮 **Sistema de Simulações SimPy** (NOVO!)
+- **🛒 Simulação de Checkouts**: Modelagem de filas, tempos de espera e utilização
+- **🚨 Simulação de Anomalias**: Falhas de hardware, MTBF, downtime e recuperação
+- **🔍 Análise de Cenários**: Comparação what-if entre configurações
+- **📊 Validação de Modelos**: Comparação dados reais vs simulados
+- **� Análise de ROI**: Cálculo de retorno sobre investimento
+- **⚡ Session State**: Persistência de resultados entre execuções
+- **🎯 Recomendações**: Insights baseados em simulações
+
 ## 🚀 Execução Rápida
 
-### 🎯 Executar Sistema Unificado (Recomendado)
+### 🎯 Sistema Completo - Método Automático (RECOMENDADO)
+```bash
+# Executar script de inicialização automática
+./start_system.sh
+
+# OU manualmente:
+source .venv/bin/activate
+streamlit run main.py --server.port 8512 &
+cd simulacoes && streamlit run app.py --server.port 8511 &
+```
+
+**✅ Acesso aos Sistemas:**
+- 📱 **Sistema Principal**: http://localhost:8512
+- 🎮 **Simulações SimPy**: http://localhost:8511
+
+### 🎯 Sistema Unificado Principal
 ```bash
 # Ativar ambiente
 source .venv/bin/activate
 
 # Executar aplicação principal unificada
-streamlit run main.py
-# Acesso: http://localhost:8501 (ou porta disponível)
+streamlit run main.py --server.port 8512
+# Acesso: http://localhost:8512
 ```
 
 **✅ Vantagens do Sistema Unificado:**
@@ -30,9 +54,10 @@ streamlit run main.py
 - 📱 Interface responsiva e moderna
 - 🔗 URLs compartilháveis para cada tarefa
 - 🎨 Ícones da página mudam automaticamente
+- 🎮 Integração com sistema de simulações
 - 🚀 Sistema usado no deploy em produção
 
-### 📋 Executar Tarefas Individualmente
+### 📋 Executar Módulos Individualmente
 ```bash
 # Ativar ambiente
 source .venv/bin/activate
@@ -49,9 +74,9 @@ cd ../Alert_Incident && streamlit run app.py
 cd ../Monitoring && streamlit run app.py
 # Acesso: http://localhost:8503
 
-# Simulações SimPy: Modelagem e Simulação
-cd ../simulacoes && streamlit run app.py
-# Acesso: http://localhost:8504
+# Simulações SimPy: Modelagem e Simulação (NOVO!)
+cd ../simulacoes && streamlit run app.py --server.port 8511
+# Acesso: http://localhost:8511
 ```
 
 **🚀 Aplicação em Produção:** [https://monitoring-analyst-test.streamlit.app/](https://monitoring-analyst-test.streamlit.app/)
@@ -67,15 +92,17 @@ cd ../simulacoes && streamlit run app.py
 3. **Compartilhe** URLs específicas com outros usuários
 4. **Observe** como o ícone da página muda automaticamente
 
-### 🎯 Novas Funcionalidades (Atualização Recente):
-- **🧭 Navegação por Rotas:** URLs compartilháveis para cada tarefa (`/?page=task1`, `/?page=task2`, etc.)
+### 🎯 Novas Funcionalidades (Atualização v2.4):
+- **🎮 Simulações SimPy:** Sistema completo de modelagem e análise preditiva
+- **🧭 Navegação por Rotas:** URLs compartilháveis para cada tarefa
 - **🎨 Ícones Dinâmicos:** O ícone da página muda automaticamente conforme a rota
-- **🔧 Sistema Corrigido:** Todos os problemas de renderização foram resolvidos
+- **🔧 Task 3 Totalmente Corrigida:** Problema do Pandas resolvido definitivamente
 - **📱 Interface Moderna:** Design responsivo e profissional
+- **⚡ Performance Otimizada:** Session state e cache inteligente
 
 ### ⚠️ Limitações do Deploy Online:
 - Sistema de SMS não funcional (requer configuração de serviços pagos)
-- Algumas funcionalidades podem ter limitações de arquivo local
+- Simulações SimPy podem ter limitações no ambiente cloud
 - Para funcionalidade completa, execute localmente conforme instruções abaixo
 
 ## 🚀 Configuração Inicial
@@ -113,39 +140,62 @@ python3 -m pip install -r requirements.txt
 
 ```
 monitoring-analyst-test/
-├── main.py                  # 🚀 Sistema unificado com navegação por rotas
-├── README.md
-├── requirements.txt
-├── .gitignore              # Arquivos ignorados pelo Git
-├── .venv/                  # Ambiente virtual
-├── Analyze_data/           # 📊 TAREFA 1 - SQLite
-│   ├── app.py             # Sistema integrado com SQLite
-│   ├── data.db           # 🗃️ Banco principal (data_table, data_table_1, data_table_2)
-│   ├── data1.db          # 🗃️ Banco secundário (data_table)
-│   ├── data2.db          # 🗃️ Banco terciário (data_table)
-│   └── data/             # 📁 CSVs (fallback)
+├── main.py                    # 🚀 Sistema unificado com navegação por rotas
+├── start_system.sh           # 🎯 Script de inicialização automática
+├── README.md                 # 📖 Documentação principal
+├── requirements.txt          # 📦 Dependências Python
+├── redirect_to_simulations.html  # 🔗 Redirecionamento para simulações
+├── .gitignore               # 📁 Arquivos ignorados pelo Git
+├── .venv/                   # 🐍 Ambiente virtual Python
+├── Analyze_data/            # 📊 TAREFA 1 - Análise SQLite
+│   ├── app.py              # Sistema integrado com SQLite
+│   ├── data.db            # 🗃️ Banco principal (data_table, data_table_1, data_table_2)
+│   ├── data1.db           # 🗃️ Banco secundário (data_table)
+│   ├── data2.db           # 🗃️ Banco terciário (data_table)
+│   └── data/              # 📁 CSVs (fallback)
 │       ├── checkout_1.csv
 │       ├── checkout_2.csv
 │       ├── transactions_1.csv
 │       └── transactions_2.csv
-├── Alert_Incident/         # 🚨 TAREFA 2  
+├── Alert_Incident/          # 🚨 TAREFA 2 - Sistema de Alertas
 │   ├── app.py
 │   └── data/
 │       ├── transactions_1.csv
 │       └── transactions_2.csv
-├── Monitoring/             # 📱 TAREFA 3 - Monitoramento SQLite
-    ├── app.py             # Sistema integrado multi-database
-    ├── credenciais.py     # Configurações Twilio
-    ├── database.db       # 🗃️ Banco local de monitoramento
-    ├── models.py         # Models SQLite
-    └── data/             # 📁 CSVs (fallback)
-        └── transactions_1.csv
-└── simulacoes/             # 🎮 SIMULAÇÕES SIMPY
-    ├── app.py             # Interface principal Streamlit
-    ├── checkout_simulation.py    # Modelagem de checkouts
-    ├── anomaly_simulation.py     # Simulação de falhas
-    └── scenario_simulation.py    # Análise de cenários
+├── Monitoring/              # 📱 TAREFA 3 - Monitoramento SQLite
+│   ├── app.py              # Sistema integrado multi-database
+│   ├── credenciais.py      # Configurações Twilio
+│   ├── database.db        # 🗃️ Banco local de monitoramento
+│   ├── models.py          # Models SQLite
+│   └── data/              # 📁 CSVs (fallback)
+│       └── transactions_1.csv
+└── simulacoes/              # 🎮 SIMULAÇÕES SIMPY (NOVO!)
+    ├── app.py              # 🎯 Interface principal Streamlit
+    ├── README.md          # 📋 Documentação específica de simulações
+    ├── app_backup.py      # 🔄 Backup da versão anterior
+    └── backup/            # 📁 Versões anteriores e testes
 ```
+
+### 🎮 **Detalhamento do Módulo de Simulações**
+
+O diretório `simulacoes/` contém um **sistema completo de simulação** baseado em SimPy:
+
+#### 📁 **Arquivos Principais:**
+- **`app.py`**: Interface Streamlit com 4 tipos de simulação
+- **`README.md`**: Documentação técnica específica
+- **`app_backup.py`**: Versão de backup para recuperação
+
+#### 🎯 **Classes de Simulação Integradas:**
+- **`CheckoutSimulation`**: Modelagem de filas e processos de atendimento
+- **`AnomalySimulation`**: Simulação de falhas com distribuições estatísticas  
+- **`ScenarioSimulation`**: Análise comparativa de cenários
+- **`load_real_data()`**: Integração com dados reais para validação
+
+#### 🔧 **Tecnologias Utilizadas:**
+- **SimPy 4.1+**: Framework de simulação discreta de eventos
+- **Plotly**: Visualizações interativas das simulações
+- **Pandas**: Processamento de dados simulados
+- **Session State**: Persistência de resultados entre execuções
 ```
 
 ```
@@ -382,7 +432,42 @@ pkill -f streamlit
 
 ---
 
-## 📊 Resumo das Funcionalidades
+## � Recursos Técnicos Avançados
+
+### 🎮 **Simulações SimPy - Framework de Simulação Discreta**
+- **SimPy 4.1+**: Modelagem de eventos discretos com precisão matemática
+- **Distribuições Estatísticas**: Exponencial, Normal, Poisson para realismo
+- **Session State**: Resultados persistem durante a sessão do usuário
+- **Plotly Interativo**: Visualizações em tempo real dos processos simulados
+- **Modelos Calibrados**: Parâmetros ajustados com dados históricos reais
+
+### 🗃️ **Arquitetura Multi-Database SQLite**
+- **3 Bancos Integrados**: `data.db`, `data1.db`, `data2.db` com consultas otimizadas
+- **Cache Inteligente**: `@st.cache_data` para performance superior
+- **Fallback Automático**: Sistema híbrido SQL → CSV para máxima confiabilidade
+- **Queries Otimizadas**: LIMIT e índices para carregamento rápido
+- **Detecção Dinâmica**: Identifica automaticamente bancos disponíveis
+
+### 🚀 **Sistema de Deploy e Navegação**
+- **Navegação por Rotas**: URLs compartilháveis (`/task1`, `/task2`, `/task3`, `/simulacoes`)
+- **Ícones Dinâmicos**: Favicon personalizado por página/módulo
+- **Script Automático**: `start_system.sh` para inicialização completa
+- **Deploy Dual**: Sistema principal (8512) + Simulações (8511)
+- **Interface Responsiva**: Design moderno compatível com mobile
+
+### ⚡ **Otimizações de Performance**
+- **Session State Management**: Resultados salvos entre reruns
+- **Lazy Loading**: Carregamento sob demanda de datasets grandes
+- **Cache de Visualizações**: Plotly charts persistem na sessão
+- **Operações Defensivas**: Tratamento robusto de erros e fallbacks
+- **Memory Efficient**: Otimizações para grandes volumes de dados
+
+### 🔧 **Integração e APIs**
+- **Twilio SMS**: Sistema de notificações por SMS para alertas críticos
+- **Email Notifications**: SMTP configurável para relatórios automáticos
+- **Git Integration**: Controle de versão com backup automático
+- **Environment Variables**: Configuração segura de credenciais
+- **Health Checks**: Monitoramento de status dos serviços
 
 | Tarefa | Aplicação | Foco Principal | Status | Tecnologia Destaque |
 |--------|-----------|----------------|---------|---------------------|
@@ -573,9 +658,44 @@ CREATE TABLE data_table (
 );
 ```
 
+## 📊 Resumo das Funcionalidades
+
+### 🎯 **Análise de Dados (Task 1)**
+- Multi-database SQLite com 3 bancos integrados
+- Dashboards interativos em tempo real
+- Sistema híbrido SQL + CSV para confiabilidade máxima
+
+### 🚨 **Sistema de Alertas (Task 2)**
+- Detecção inteligente de anomalias
+- Notificações multi-canal (email, SMS, visual)
+- Configuração flexível de thresholds
+
+### 📱 **Monitoramento (Task 3)**
+- SQLite otimizado com performance superior
+- Dashboard unificado para múltiplas métricas
+- Integração Twilio para alertas críticos
+
+### 🎮 **Simulações SimPy (NOVO!)**
+- Modelagem de filas e processos de checkout
+- Simulação de falhas com distribuições estatísticas
+- Análise de cenários com ROI calculado
+- Validação com dados reais do sistema
+
 ---
 
 ## 📋 Changelog
+
+### 🆕 Versão 2.4 (Novembro 2025) - SimPy Completo + Documentação 
+- **🎮 Sistema de Simulações SimPy:** Implementação completa de simulações discretas
+- **🛒 Modelagem de Checkout:** Filas, tempos de espera, utilização de recursos
+- **🚨 Simulação de Anomalias:** Falhas com distribuições estatísticas avançadas
+- **🔍 Análise de Cenários:** Comparação de configurações com ROI calculado
+- **📊 Validação de Dados:** Integração de dados reais para calibração de modelos
+- **⚡ Session State:** Persistência de resultados entre execuções
+- **🎯 Recomendações IA:** Insights baseados em análise de simulações
+- **📱 Interface Moderna:** Sidebar organizada e interface responsiva
+- **🚀 Script Automático:** start_system.sh para inicialização completa do sistema
+- **📖 Documentação Completa:** README e documentação técnica abrangente
 
 ### 🆕 Versão 2.3 (Outubro 2025) - Correção Total da Task 3
 - **🔧 Resolução Definitiva:** Corrigido erro `'PandasThen' object has no attribute '_evaluate_output_names'`
@@ -620,4 +740,28 @@ CREATE TABLE data_table (
 
 ---
 
-*Desenvolvido com ❤️ para análise inteligente de transações*
+## 🎯 Conclusão
+
+Este projeto representa um **sistema completo de análise e monitoramento** com recursos avançados de simulação e modelagem preditiva. A **versão 2.4** inclui todas as funcionalidades solicitadas, com implementação robusta, documentação completa e interface profissional.
+
+### ✨ **Principais Destaques:**
+- **🔧 Task 3 100% Funcional**: Problema do Pandas completamente resolvido
+- **🎮 SimPy Completo**: Sistema de simulações profissional implementado
+- **🗃️ Multi-Database**: Integração SQLite com fallbacks inteligentes
+- **📱 Interface Moderna**: Design responsivo e navegação por rotas
+- **🚀 Deploy Simplificado**: Script automático para inicialização
+
+### 🛠️ **Tecnologias Utilizadas:**
+- **Python 3.9+** | **Streamlit** | **SimPy 4.1+** | **SQLite3** | **Plotly** | **Pandas** | **Twilio**
+
+### 📞 **Suporte e Manutenção:**
+- 📖 **Documentação Completa**: README principal + documentação técnica específica
+- 🔧 **Troubleshooting**: Guias detalhados de resolução de problemas
+- 🚀 **Scripts Automáticos**: Inicialização simplificada com `start_system.sh`
+- 💾 **Sistema de Backup**: Controle de versão e recuperação automática
+
+**Sistema pronto para produção! 🚀**
+
+---
+
+*Desenvolvido com ❤️ para análise inteligente de transações e simulações preditivas*
