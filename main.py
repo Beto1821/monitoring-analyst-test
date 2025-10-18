@@ -7,6 +7,18 @@ import numpy as np
 from datetime import datetime, timedelta
 import sqlite3
 import os
+import socket
+
+
+# 🌐 Detecção de ambiente (Local vs Streamlit Cloud)
+def is_streamlit_cloud():
+    """Detecta se está rodando no Streamlit Cloud"""
+    return (
+        os.getenv('STREAMLIT_SHARING_MODE') == 'true' or 
+        'streamlit' in os.getcwd().lower() or
+        'github' in os.getcwd().lower() or
+        os.getenv('STREAMLIT_SERVER_PORT') is not None
+    )
 
 
 # 🎨 Configuração dinâmica da página baseada na rota
@@ -754,12 +766,14 @@ if current_route == "home":
             </div>
             """, unsafe_allow_html=True)
         else:
-            st.warning("⚠️ **Sistema de Simulações INATIVO**")
+            st.success("✅ **Sistema de Simulações INTEGRADO e ATIVO**")
             st.info("""
-            **Para ativar as simulações:**
-            1. Navegue até a página "🎮 Simulações" na sidebar
-            2. Siga as instruções para iniciar o sistema
-            3. Ou execute: `cd simulacoes && streamlit run app.py --server.port 8511`
+            **🎮 Simulações SimPy Disponíveis:**
+            - 🛒 **Simulação de Checkouts**: Modelagem de filas e tempos de espera
+            - 🚨 **Simulação de Anomalias**: Análise de falhas e MTBF
+            - 📊 **Comparação Real vs Simulado**: Validação de modelos
+            
+            **Para acessar**: Clique em "🎮 Simulações" na sidebar ←
             """)
     
     # Casos de uso práticos
@@ -1144,7 +1158,7 @@ elif current_route == "task3":
         st.code(traceback.format_exc())
 
 elif current_route == "simulacoes":
-    # 🎮 SIMULAÇÕES SIMPY
+    # 🎮 SIMULAÇÕES SIMPY INTEGRADAS
     st.header("🎮 Simulações SimPy")
     load_task_safely('simulacoes/app.py', 'Simulações SimPy')
 
