@@ -8,7 +8,7 @@ import os
 # 🎨 Configuração da página (apenas quando executado individualmente)
 try:
     st.set_page_config(
-        page_title="🚨 Sistema de Alertas e Incidentes",
+        page_title=" Sistema de Alertas e Incidentes",
         page_icon="🚨",
         layout="wide",
         initial_sidebar_state="expanded"

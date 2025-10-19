@@ -105,7 +105,7 @@ results_df1, results_df2 = prepare_analysis_data()
 # 🎨 Configuração da página (apenas quando executado individualmente)
 try:
     st.set_page_config(
-        page_title="📊 Análise de Transações",
+        page_title=" Análise de Transações",
         page_icon="📊",
         layout="wide",
         initial_sidebar_state="expanded"
