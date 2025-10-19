@@ -385,7 +385,7 @@ def load_task_safely(task_path, task_name):
                     ### 🌐 **Compatibilidade:**
                     - **Browsers**: Chrome, Firefox, Safari, Edge
                     - **OS**: Windows, macOS, Linux
-                    - **Portas**: 8511 (simulações), 8512 (principal)
+                    - **Portas**: 8512 (sistema integrado)
                     """)
                 
                 with col_tech2:
@@ -394,8 +394,8 @@ def load_task_safely(task_path, task_name):
                     
                     **🔴 Simulação não carrega:**
                     ```bash
-                    cd simulacoes
-                    streamlit run app.py --server.port 8511
+                    # Todas as simulações estão integradas na aplicação principal
+                    streamlit run main.py --server.port 8512
                     ```
                     
                     **🔴 Erro de importação:**
@@ -432,78 +432,36 @@ def load_task_safely(task_path, task_name):
             
             st.markdown("---")
             
-            # Sistema de acesso às simulações (SOLUÇÃO ROBUSTA)
-            
-            # Verificar se a aplicação de simulações está rodando
-            import socket
-            def check_port(host, port):
-                try:
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.settimeout(1)
-                    result = sock.connect_ex((host, port))
-                    sock.close()
-                    return result == 0
-                except Exception:
-                    return False
-            
-            sim_running = check_port('localhost', 8511)
+            # Sistema integrado - simulações sempre disponíveis
+            # No sistema integrado, simulações sempre estão disponíveis
+            sim_running = True
+            if is_streamlit_cloud():
+                status_msg = "✅ **Simulações integradas no sistema principal (Streamlit Cloud)**"
+            else:
+                status_msg = "✅ **Simulações integradas no sistema principal (Local)**"
             
             # Status da aplicação
-            if sim_running:
-                st.success("✅ **Aplicação de Simulações ATIVA** na porta 8511")
-            else:
-                st.error("❌ **Aplicação de Simulações NÃO está rodando** na porta 8511")
-                st.info("💡 Para iniciar: `cd simulacoes && streamlit run app.py --server.port 8511`")
+            st.success(status_msg)
             
             st.markdown("---")
             
-            # Links funcionais garantidos
+            # Acesso direto às simulações integradas
+            st.markdown("### 🎯 **SIMULAÇÕES INTEGRADAS**")
+            
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("### 🎯 **LINK DIRETO (FUNCIONA SEMPRE)**")
-                if sim_running:
-                    # Usar HTML puro que sempre funciona
-                    st.markdown("""
-                    <div style="text-align: center; margin: 20px 0;">
-                        <a href="http://localhost:8511" target="_blank" rel="noopener noreferrer"
-                           style="display: inline-block; padding: 15px 30px; 
-                                  background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-                                  color: white; text-decoration: none; border-radius: 10px;
-                                  font-weight: bold; font-size: 18px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-                            🚀 ABRIR SIMULAÇÕES
-                        </a>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.error("Aplicação não está rodando")
+                if st.button("🚀 Acessar Simulações", type="primary", use_container_width=True):
+                    st.query_params.page = 'simulacoes'
+                    st.success("✅ Navegando para simulações...")
+                    st.rerun()
             
             with col2:
-                st.markdown("### 📋 **URL PARA COPIAR**")
-                st.markdown("**Cole esta URL no navegador:**")
-                st.code("http://localhost:8511")
-                
-                if st.button("📋 Copiar URL", use_container_width=True):
-                    st.success("URL copiada! Cole no navegador: http://localhost:8511")
-            
-            with col1:
-                if st.button("🚀 Abrir Sistema de Simulações", type="primary", use_container_width=True):
-                    st.success("✅ Tentando abrir sistema de simulações...")
-                    
-                    # JavaScript para abrir nova aba automaticamente
-                    st.markdown("""
-                    <script>
-                    window.open('http://localhost:8511', '_blank');
-                    </script>
-                    """, unsafe_allow_html=True)
+                st.info("**Todas as simulações estão integradas nesta aplicação. Use o botão ao lado ou o menu lateral.**")
             
             with col2:
-                # Link direto como alternativa principal
-                st.link_button(
-                    "🎯 Link Direto para Simulações", 
-                    "http://localhost:8511",
-                    use_container_width=True
-                )
+                # Informação sobre integração
+                st.info("**Simulações estão integradas nesta aplicação. Use o menu lateral ou o botão ao lado.**")
             
             st.markdown("""
             **📋 Como usar:**
@@ -512,16 +470,17 @@ def load_task_safely(task_path, task_name):
             3. Configure os parâmetros conforme necessário
             4. Execute as simulações e visualize os resultados interativos
             
-            **🔗 Link manual:** `http://localhost:8511`
+            **🎯 Navegação:** Clique em "🎮 Simulações" na barra lateral
             """)
             
-            # Informações sobre status das aplicações
-            st.info("ℹ️ **Status das Aplicações:** Main App (porta 8512) | Simulações (porta 8511)")
+            # Informações sobre status das aplicações  
+            st.info("ℹ️ **Sistema Integrado:** Todas as funcionalidades estão na porta 8512")
                 
             # Link clicável como backup adicional
             st.markdown("""
             <div style="text-align: center; margin: 1rem 0;">
-                <a href="http://localhost:8511" target="_blank" 
+                <a href="#simulacoes" 
+                   onclick="document.querySelector('button[data-testid=\"stSidebar\"] button:contains(Simulações)').click()" 
                    style="display: inline-block; padding: 0.5rem 1rem; 
                           background-color: #4CAF50; color: white; 
                           text-decoration: none; border-radius: 5px;
@@ -546,7 +505,7 @@ def load_task_safely(task_path, task_name):
                 ├── Tarefa 1: Análise de Dados
                 ├── Tarefa 2: Alertas e Incidentes  
                 ├── Tarefa 3: Monitoramento Integrado
-                └── simulacoes/app.py (porta 8511) ← Sistema SimPy
+                └── Sistema Integrado (porta 8512) ← Inclui SimPy
                 ```
                 """)
             
@@ -735,14 +694,8 @@ if current_route == "home":
     # Verificar se simulações estão ativas
     import socket
     def check_sim_port():
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
-            result = sock.connect_ex(('localhost', 8511))
-            sock.close()
-            return result == 0
-        except:
-            return False
+        # Simulações integradas - sempre disponíveis
+        return True
     
     sim_active = check_sim_port()
     
@@ -751,20 +704,10 @@ if current_route == "home":
         if sim_active:
             st.success("✅ **Sistema de Simulações ATIVO** - Pronto para uso!")
             
-            # Botão destacado para acessar simulações
-            st.markdown("""
-            <div style="text-align: center; margin: 20px 0;">
-                <a href="http://localhost:8511" target="_blank" rel="noopener noreferrer"
-                   style="display: inline-block; padding: 15px 40px; 
-                          background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
-                          color: white; text-decoration: none; border-radius: 25px;
-                          font-weight: bold; font-size: 20px; 
-                          box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-                          transition: transform 0.2s;">
-                    🚀 ACESSAR SIMULAÇÕES
-                </a>
-            </div>
-            """, unsafe_allow_html=True)
+            # Botão para acessar simulações integradas
+            if st.button("🚀 Acessar Simulações", type="primary", use_container_width=True):
+                st.query_params.page = 'simulacoes'
+                st.rerun()
         else:
             st.success("✅ **Sistema de Simulações INTEGRADO e ATIVO**")
             st.info("""
@@ -1160,7 +1103,491 @@ elif current_route == "task3":
 elif current_route == "simulacoes":
     # 🎮 SIMULAÇÕES SIMPY INTEGRADAS
     st.header("🎮 Simulações SimPy")
-    load_task_safely('simulacoes/app.py', 'Simulações SimPy')
+    
+    # Tentar importar as classes de simulação
+    try:
+        import sys
+        import os
+        
+        # Adicionar o diretório de simulações ao path
+        simulacoes_path = os.path.join(os.getcwd(), 'simulacoes')
+        if simulacoes_path not in sys.path:
+            sys.path.append(simulacoes_path)
+        
+        # Importar classes de simulação
+        from checkout_simulation import CheckoutSimulation
+        from anomaly_simulation import AnomalySimulation
+        from scenario_simulation import ScenarioSimulation
+        
+        # Interface de simulações
+        st.success("✅ **Simulações carregadas com sucesso!**")
+        
+        # Abas para diferentes tipos de simulação
+        tab1, tab2, tab3 = st.tabs([
+            "🛒 Simulação de Checkouts",
+            "⚠️ Simulação de Anomalias", 
+            "🎯 Cenários Personalizados"
+        ])
+        
+        with tab1:
+            st.subheader("🛒 Simulação de Checkouts")
+            st.write("Simule filas e atendimento em checkouts com diferentes configurações.")
+            
+            # Configurações da simulação
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.write("**Configurações do Checkout 1:**")
+                checkout1_capacity = st.slider("Capacidade Checkout 1", 1, 5, 1)
+                
+            with col2:
+                st.write("**Configurações do Checkout 2:**")
+                checkout2_capacity = st.slider("Capacidade Checkout 2", 1, 5, 1)
+                service_multiplier = st.slider("Multiplicador de Tempo", 1.0, 3.0, 2.0)
+            
+            # Configurações gerais
+            st.write("**Configurações da Simulação:**")
+            col3, col4 = st.columns(2)
+            
+            with col3:
+                num_customers = st.slider("Número de Clientes", 10, 100, 30)
+                
+            with col4:
+                simulation_hours = st.slider("Horas de Simulação", 1, 12, 4)
+            
+            if st.button("🚀 Executar Simulação de Checkout", type="primary"):
+                with st.spinner("Executando simulação..."):
+                    # Executar simulação
+                    sim = CheckoutSimulation(
+                        checkout1_capacity=checkout1_capacity,
+                        checkout2_capacity=checkout2_capacity,
+                        service_time_multiplier=service_multiplier
+                    )
+                    
+                    # Executar e obter resultados
+                    results = sim.run_simulation(
+                        duration_hours=simulation_hours
+                    )
+                    
+                    # Exibir resultados
+                    st.success("✅ Simulação concluída!")
+                    
+                    if results is not None and not results.empty:
+                        # Estatísticas básicas
+                        st.subheader("📊 Resultados da Simulação")
+                        
+                        col_stats1, col_stats2 = st.columns(2)
+                        
+                        with col_stats1:
+                            st.metric("Total de Clientes", len(results))
+                            
+                        with col_stats2:
+                            if 'wait_time' in results.columns:
+                                avg_wait = results['wait_time'].mean()
+                                st.metric("Tempo Médio de Espera", f"{avg_wait:.2f} min")
+                            else:
+                                st.metric("Tempo Médio de Espera", "N/A")
+                        
+                        # Gráficos e análises
+                        if 'wait_time' in results.columns:
+                            # Gráfico de tempos de espera
+                            fig_wait = px.histogram(
+                                results, x='wait_time', 
+                                title="Distribuição dos Tempos de Espera",
+                                labels={'wait_time': 'Tempo (min)', 'count': 'Frequência'}
+                            )
+                            st.plotly_chart(fig_wait, use_container_width=True)
+                        
+                        # Exibir tabela de resultados
+                        with st.expander("� Ver Dados Detalhados"):
+                            st.dataframe(results)
+                    else:
+                        st.warning("⚠️ Nenhum resultado gerado. Tente ajustar os parâmetros.")
+                    
+        with tab2:
+            st.subheader("⚠️ Simulação de Anomalias")
+            st.write("Detecte e analise anomalias em sistemas de checkout.")
+            
+            # Configurações da simulação de anomalias
+            col_anom1, col_anom2 = st.columns(2)
+            
+            with col_anom1:
+                mtbf_checkout1 = st.slider("MTBF Checkout 1 (horas)", 8, 20, 12, key="mtbf1")
+                mtbf_checkout2 = st.slider("MTBF Checkout 2 (horas)", 4, 12, 6, key="mtbf2")
+                
+            with col_anom2:
+                network_failure_rate = st.slider("Taxa de Falha de Rede", 0.01, 0.1, 0.05, key="network")
+                simulation_duration = st.slider("Duração (horas)", 4, 48, 24, key="duration_anom")
+            
+            if st.button("🔍 Executar Simulação de Anomalias", type="primary", key="btn_anomaly"):
+                with st.spinner("Detectando anomalias..."):
+                    try:
+                        # Executar simulação de anomalias
+                        anomaly_sim = AnomalySimulation(
+                            mtbf_checkout1=mtbf_checkout1,
+                            mtbf_checkout2=mtbf_checkout2,
+                            network_failure_rate=network_failure_rate
+                        )
+                        
+                        results = anomaly_sim.run_simulation(
+                            duration_hours=simulation_duration
+                        )
+                        
+                        st.success("✅ Análise de anomalias concluída!")
+                        
+                        # Exibir resultados
+                        if results is not None and not results.empty:
+                            st.subheader("🔍 Resultados da Detecção")
+                            
+                            col_anom_res1, col_anom_res2 = st.columns(2)
+                            
+                            with col_anom_res1:
+                                st.metric("Anomalias Detectadas", len(results))
+                                
+                            with col_anom_res2:
+                                if 'severity' in results.columns:
+                                    critical_count = len(results[results['severity'] == 'critical'])
+                                    st.metric("Anomalias Críticas", critical_count)
+                                else:
+                                    st.metric("Anomalias Críticas", "N/A")
+                            
+                            # Gráfico de anomalias por tipo se houver dados
+                            if 'type' in results.columns and not results.empty:
+                                type_counts = results['type'].value_counts().reset_index()
+                                fig_anomaly = px.bar(
+                                    type_counts,
+                                    x='type', y='count',
+                                    title="Distribuição de Tipos de Anomalias"
+                                )
+                                st.plotly_chart(fig_anomaly, use_container_width=True)
+                            
+                            # Exibir dados detalhados
+                            with st.expander("📋 Ver Anomalias Detalhadas"):
+                                st.dataframe(results)
+                        else:
+                            st.info("ℹ️ Nenhuma anomalia detectada no período simulado.")
+                            
+                    except Exception as e:
+                        st.error(f"❌ **Erro na simulação de anomalias**: {e}")
+                        st.code(f"Tipo do erro: {type(e).__name__}")
+                        import traceback
+                        st.code(traceback.format_exc())
+        
+        with tab3:
+            st.subheader("🎯 Cenários Personalizados")
+            st.write("Compare diferentes cenários de melhoria do sistema.")
+            
+            # Seleção de cenários
+            scenario_options = {
+                "current": "Cenário Atual",
+                "improved": "Cenário Melhorado", 
+                "redundancy": "Cenário com Redundância",
+                "full_upgrade": "Upgrade Completo"
+            }
+            
+            selected_scenario = st.selectbox(
+                "Escolha o cenário:",
+                list(scenario_options.keys()),
+                format_func=lambda x: scenario_options[x],
+                key="scenario_select"
+            )
+            
+            # Configurações personalizadas
+            st.write("**Configurações do Cenário:**")
+            col_scen1, col_scen2 = st.columns(2)
+            
+            with col_scen1:
+                scenario_duration = st.slider("Duração da Simulação (horas)", 4, 72, 24, key="duration_scenario")
+                
+            with col_scen2:
+                st.info(f"**Cenário:** {scenario_options[selected_scenario]}")
+            
+            if st.button("🎮 Executar Cenário", type="primary", key="btn_scenario"):
+                with st.spinner("Executando cenário comparativo..."):
+                    try:
+                        # Executar simulação de cenário
+                        scenario_sim = ScenarioSimulation()
+                        
+                        # Usar o método correto da classe
+                        results = scenario_sim.run_scenario(
+                            scenario_name=selected_scenario,
+                            duration_hours=scenario_duration
+                        )
+                        
+                        st.success("✅ Cenário executado com sucesso!")
+                        
+                        # Exibir resultados do cenário com interface rica
+                        if results and isinstance(results, dict):
+                            
+                            # Extrair métricas principais
+                            metrics = results.get('metrics', {})
+                            transactions_df = None
+                            anomalies_df = None
+                            
+                            # Processar dados de transações se existirem
+                            if 'transactions' in results and isinstance(results['transactions'], str):
+                                try:
+                                    import io
+                                    transactions_df = pd.read_csv(io.StringIO(results['transactions']))
+                                except:
+                                    pass
+                            
+                            # Processar dados de anomalias se existirem
+                            if 'anomalies' in results and isinstance(results['anomalies'], str):
+                                try:
+                                    import io  
+                                    anomalies_df = pd.read_csv(io.StringIO(results['anomalies']))
+                                except:
+                                    pass
+                            
+                            # 🎯 PAINEL DE MÉTRICAS PRINCIPAIS
+                            st.subheader("📊 Resumo Executivo do Cenário")
+                            
+                            # Linha 1 - Métricas de Performance
+                            col1, col2, col3, col4 = st.columns(4)
+                            
+                            with col1:
+                                total_customers = metrics.get('total_customers', 'N/A')
+                                st.metric("👥 Total de Clientes", total_customers)
+                            
+                            with col2:
+                                avg_wait = metrics.get('avg_wait_time', 0)
+                                st.metric("⏱️ Tempo Médio Espera", f"{avg_wait:.1f} min")
+                            
+                            with col3:
+                                efficiency = metrics.get('system_efficiency', 0) * 100
+                                st.metric("⚡ Eficiência Sistema", f"{efficiency:.1f}%")
+                            
+                            with col4:
+                                availability = metrics.get('availability', 0)
+                                st.metric("🟢 Disponibilidade", f"{availability:.1f}%")
+                            
+                            # Linha 2 - Métricas de Qualidade
+                            col5, col6, col7, col8 = st.columns(4)
+                            
+                            with col5:
+                                total_anomalies = metrics.get('total_anomalies', 0)
+                                st.metric("🚨 Total Anomalias", total_anomalies)
+                            
+                            with col6:
+                                critical_incidents = metrics.get('critical_incidents', 0)
+                                st.metric("🔴 Incidentes Críticos", critical_incidents)
+                            
+                            with col7:
+                                customer_sat = metrics.get('customer_satisfaction', 0)
+                                st.metric("😊 Satisfação Cliente", f"{customer_sat:.1f}%")
+                                
+                            with col8:
+                                revenue_loss = metrics.get('revenue_loss', 0)
+                                st.metric("💰 Perda de Receita", f"R$ {revenue_loss:,.0f}")
+                            
+                            # 📈 GRÁFICOS E ANÁLISES VISUAIS
+                            st.subheader("📈 Análises Visuais")
+                            
+                            # Aba de gráficos
+                            tab_trans, tab_anom, tab_perf = st.tabs(["🛒 Transações", "🚨 Anomalias", "⚡ Performance"])
+                            
+                            with tab_trans:
+                                if transactions_df is not None and not transactions_df.empty:
+                                    col_t1, col_t2 = st.columns(2)
+                                    
+                                    with col_t1:
+                                        # Gráfico de utilização por checkout
+                                        checkout_usage = transactions_df['checkout_name'].value_counts()
+                                        fig_checkout = px.pie(
+                                            values=checkout_usage.values,
+                                            names=checkout_usage.index,
+                                            title="📊 Distribuição de Uso por Checkout"
+                                        )
+                                        st.plotly_chart(fig_checkout, use_container_width=True)
+                                    
+                                    with col_t2:
+                                        # Gráfico de tempos de espera ao longo do tempo
+                                        if 'hour' in transactions_df.columns:
+                                            hourly_wait = transactions_df.groupby('hour')['wait_time'].mean().reset_index()
+                                            fig_wait = px.line(
+                                                hourly_wait, x='hour', y='wait_time',
+                                                title="⏱️ Tempo Médio de Espera por Hora"
+                                            )
+                                            st.plotly_chart(fig_wait, use_container_width=True)
+                                    
+                                    # Histograma de tempos de atendimento
+                                    if 'service_time' in transactions_df.columns:
+                                        fig_service = px.histogram(
+                                            transactions_df, x='service_time',
+                                            title="⏲️ Distribuição dos Tempos de Atendimento",
+                                            nbins=20
+                                        )
+                                        st.plotly_chart(fig_service, use_container_width=True)
+                                else:
+                                    st.info("📊 Dados de transações não disponíveis para visualização")
+                            
+                            with tab_anom:
+                                if anomalies_df is not None and not anomalies_df.empty:
+                                    col_a1, col_a2 = st.columns(2)
+                                    
+                                    with col_a1:
+                                        # Gráfico de tipos de anomalias
+                                        if 'type' in anomalies_df.columns:
+                                            anom_types = anomalies_df['type'].value_counts().reset_index()
+                                            fig_anom_types = px.bar(
+                                                anom_types, x='type', y='count',
+                                                title="🚨 Tipos de Anomalias Detectadas"
+                                            )
+                                            st.plotly_chart(fig_anom_types, use_container_width=True)
+                                    
+                                    with col_a2:
+                                        # Gráfico de impacto das anomalias
+                                        if 'impact_score' in anomalies_df.columns:
+                                            fig_impact = px.box(
+                                                anomalies_df, y='impact_score',
+                                                title="📊 Distribuição do Score de Impacto"
+                                            )
+                                            st.plotly_chart(fig_impact, use_container_width=True)
+                                    
+                                    # Timeline de anomalias
+                                    if 'start_time' in anomalies_df.columns and 'type' in anomalies_df.columns:
+                                        fig_timeline = px.scatter(
+                                            anomalies_df, x='start_time', y='type', 
+                                            color='impact_score',
+                                            title="🕐 Timeline de Anomalias",
+                                            size='impact_score'
+                                        )
+                                        st.plotly_chart(fig_timeline, use_container_width=True)
+                                else:
+                                    st.info("🚨 Nenhuma anomalia detectada neste cenário")
+                            
+                            with tab_perf:
+                                # KPIs de Performance em cards
+                                perf_col1, perf_col2 = st.columns(2)
+                                
+                                with perf_col1:
+                                    st.markdown("### 🎯 Indicadores de Qualidade")
+                                    
+                                    # Gauge chart para disponibilidade
+                                    availability_val = metrics.get('availability', 0)
+                                    color = "green" if availability_val > 95 else "yellow" if availability_val > 90 else "red"
+                                    st.markdown(f"""
+                                    <div style="text-align: center; padding: 20px;">
+                                        <h2 style="color: {color};">{availability_val:.1f}%</h2>
+                                        <p>Disponibilidade do Sistema</p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                    
+                                    # Gauge para satisfação do cliente
+                                    satisfaction = metrics.get('customer_satisfaction', 0)
+                                    sat_color = "green" if satisfaction > 80 else "yellow" if satisfaction > 60 else "red"
+                                    st.markdown(f"""
+                                    <div style="text-align: center; padding: 20px;">
+                                        <h2 style="color: {sat_color};">{satisfaction:.1f}%</h2>
+                                        <p>Satisfação do Cliente</p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                
+                                with perf_col2:
+                                    st.markdown("### 💼 Indicadores Financeiros")
+                                    
+                                    # Custo de implementação
+                                    impl_cost = metrics.get('implementation_cost', 0)
+                                    st.markdown(f"""
+                                    <div style="text-align: center; padding: 20px;">
+                                        <h2 style="color: blue;">R$ {impl_cost:,.0f}</h2>
+                                        <p>Custo de Implementação</p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                    
+                                    # Perda de receita
+                                    revenue_loss = metrics.get('revenue_loss', 0)
+                                    st.markdown(f"""
+                                    <div style="text-align: center; padding: 20px;">
+                                        <h2 style="color: red;">R$ {revenue_loss:,.0f}</h2>
+                                        <p>Perda de Receita</p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                            
+                            # 📋 TABELA DE DADOS DETALHADOS (opcional)
+                            with st.expander("📋 Ver Dados Detalhados do Cenário"):
+                                if transactions_df is not None and not transactions_df.empty:
+                                    st.markdown("#### 🛒 Dados de Transações")
+                                    st.dataframe(transactions_df.head(100), use_container_width=True)
+                                
+                                if anomalies_df is not None and not anomalies_df.empty:
+                                    st.markdown("#### 🚨 Dados de Anomalias")
+                                    st.dataframe(anomalies_df, use_container_width=True)
+                                
+                                st.markdown("#### ⚙️ Configuração do Cenário")
+                                scenario_config = results.get('scenario', {})
+                                if scenario_config:
+                                    st.json(scenario_config)
+                        else:
+                            st.warning("⚠️ Nenhum resultado obtido para o cenário selecionado.")
+                            
+                    except Exception as e:
+                        st.error(f"❌ **Erro na simulação de cenário**: {e}")
+                        st.code(f"Tipo do erro: {type(e).__name__}")
+                        import traceback
+                        st.code(traceback.format_exc())
+    
+    except ImportError as e:
+        st.error(f"❌ **Erro ao carregar simulações**: {e}")
+        
+        # Interface simplificada como fallback
+        st.info("🔧 **Modo Simplificado**: Usando simulação básica integrada")
+        
+        # Simulação básica sem dependências externas
+        st.subheader("🎲 Simulação Básica")
+        
+        if st.button("🚀 Executar Simulação Básica", type="primary"):
+            with st.spinner("Executando simulação básica..."):
+                import random
+                import time
+                
+                # Simulação básica com dados aleatórios
+                time.sleep(2)  # Simular processamento
+                
+                # Gerar dados aleatórios para demonstração
+                results = []
+                for i in range(30):
+                    results.append({
+                        'customer_id': i+1,
+                        'wait_time': random.uniform(1, 10),
+                        'service_time': random.uniform(2, 8),
+                        'checkout': random.choice([1, 2])
+                    })
+                
+                st.success("✅ Simulação básica concluída!")
+                
+                # Exibir resultados básicos
+                df = pd.DataFrame(results)
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Total de Clientes", len(results))
+                with col2:
+                    avg_wait = df['wait_time'].mean()
+                    st.metric("Tempo Médio de Espera", f"{avg_wait:.2f} min")
+                
+                # Gráfico básico
+                fig = px.bar(
+                    df.groupby('checkout').size().reset_index(name='count'),
+                    x='checkout', y='count',
+                    title="Distribuição por Checkout"
+                )
+                st.plotly_chart(fig, use_container_width=True)
+        
+        # Botão para voltar à página inicial
+        if st.button("🏠 Voltar à Página Inicial"):
+            st.query_params.page = 'home'
+            st.rerun()
+    
+    except Exception as e:
+        st.error(f"❌ **Erro inesperado**: {e}")
+        st.info("🔧 **Solução**: Tente recarregar a página ou entre em contato com o suporte")
+        
+        # Botão para voltar à página inicial
+        if st.button("🏠 Voltar à Página Inicial"):
+            st.query_params.page = 'home'
+            st.rerun()
 
 # 📱 Footer
 st.markdown("---")

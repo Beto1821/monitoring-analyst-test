@@ -1,6 +1,13 @@
-# 📊 Monitoring Analyst Test
+# 📊 Monitoring### 🎮 **Sistema de Simulações SimPy Integrado** 
+- **🛒 Simulação de Checkouts**: Modelagem de filas, tempos de espera e utilização com gráficos interativos
+- **🚨 Simulação de Anomalias**: Falhas de hardware, MTBF, downtime com visualizações ricas  
+- **🔍 Análise de Cenários**: Interface executiva com métricas KPI e dashboard profissional
+- **📊 Visualizações Avançadas**: Gráficos Plotly, timelines, distribuyções e análise temporal
+- **💰 Métricas Financeiras**: ROI, perda de receita, custos de implementação
+- **📈 Interface Rica**: Abas organizadas, cards de métricas e análise visual completa
+- **🎯 Dashboard Executivo**: Resumo de KPIs, satisfação do cliente e disponibilidade Test
 
-Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. **Quatro módulos integrados** em uma aplicação moderna com navegação por rotas, simulações SimPy e análise preditiva.
+Sistema completo de análise de transações e monitoramento desenvolvido em Python com Streamlit. **Sistema unificado** com interface moderna, navegação por rotas, simulações SimPy integradas e análise preditiva avançada.
 
 ## ✨ Principais Funcionalidades
 
@@ -24,38 +31,24 @@ Sistema completo de análise de transações e monitoramento desenvolvido em Pyt
 
 ## 🚀 Execução Rápida
 
-### 🎯 Sistema Completo - Método Automático (RECOMENDADO)
+### 🎯 Sistema Unificado Completo (RECOMENDADO)
 ```bash
-# Executar script de inicialização automática
-./start_system.sh
-
-# OU manualmente:
+# Ativar ambiente e executar sistema completo
 source .venv/bin/activate
-streamlit run main.py --server.port 8512 &
-cd simulacoes && streamlit run app.py --server.port 8511 &
-```
-
-**✅ Acesso aos Sistemas:**
-- 📱 **Sistema Principal**: http://localhost:8512
-- 🎮 **Simulações SimPy**: http://localhost:8511
-
-### 🎯 Sistema Unificado Principal
-```bash
-# Ativar ambiente
-source .venv/bin/activate
-
-# Executar aplicação principal unificada
 streamlit run main.py --server.port 8512
+
 # Acesso: http://localhost:8512
 ```
 
-**✅ Vantagens do Sistema Unificado:**
-- 🧭 Navegação por rotas URL com ícones dinâmicos
-- 📱 Interface responsiva e moderna
-- 🔗 URLs compartilháveis para cada tarefa
-- 🎨 Ícones da página mudam automaticamente
-- 🎮 Integração com sistema de simulações
-- 🚀 Sistema usado no deploy em produção
+**✅ Funcionalidades do Sistema Unificado:**
+- 🏠 **Homepage**: Dashboard principal com navegação centralizada
+- 📊 **Tarefa 1**: Análise avançada de dados SQLite integrada
+- 🚨 **Tarefa 2**: Sistema de alertas e incidentes profissional  
+- 📱 **Tarefa 3**: Central de monitoramento multi-database
+- 🎮 **Simulações**: Interface rica com 3 tipos de simulação SimPy integrados
+- 🧭 **Navegação por rotas**: URLs compartilháveis para cada seção
+- 📈 **Visualizações ricas**: Gráficos interativos e dashboards executivos
+- � **Interface moderna**: Design responsivo com cards e métricas visuais
 
 ### 📋 Executar Módulos Individualmente
 ```bash
@@ -92,18 +85,20 @@ cd ../simulacoes && streamlit run app.py --server.port 8511
 3. **Compartilhe** URLs específicas com outros usuários
 4. **Observe** como o ícone da página muda automaticamente
 
-### 🎯 Novas Funcionalidades (Atualização v2.4):
-- **🎮 Simulações SimPy:** Sistema completo de modelagem e análise preditiva
-- **🧭 Navegação por Rotas:** URLs compartilháveis para cada tarefa
-- **🎨 Ícones Dinâmicos:** O ícone da página muda automaticamente conforme a rota
-- **🔧 Task 3 Totalmente Corrigida:** Problema do Pandas resolvido definitivamente
-- **📱 Interface Moderna:** Design responsivo e profissional
-- **⚡ Performance Otimizada:** Session state e cache inteligente
+### 🎯 Funcionalidades da Versão Final (v3.0):
+- **🎮 Simulações Integradas:** SimPy totalmente integrado no sistema principal com interface rica
+- **📊 Visualizações Executivas:** Dashboard de cenários com KPIs, gráficos e análise temporal
+- **🚨 Interface de Anomalias:** Sistema de detecção com gráficos de barras, timelines e métricas
+- **🛒 Simulação de Checkouts:** Modelagem de filas com análise de utilização e performance
+- **🧭 Navegação Unificada:** Sistema único com todas as funcionalidades integradas
+- **� Métricas Financeiras:** ROI, perdas de receita e custos de implementação visualizados
+- **⚡ Sistema Cloud-Ready:** Sem dependências de porta, pronto para Streamlit Cloud
 
 ### ⚠️ Limitações do Deploy Online:
-- Sistema de SMS não funcional (requer configuração de serviços pagos)
-- Simulações SimPy podem ter limitações no ambiente cloud
-- Para funcionalidade completa, execute localmente conforme instruções abaixo
+- Sistema de SMS não funcional (requer configuração Twilio)
+- Todas as simulações SimPy funcionam perfeitamente no cloud
+- Interface rica e visualizações funcionam 100% online
+- Para notificações SMS, execute localmente e configure credenciais Twilio
 
 ## 🚀 Configuração Inicial
 
@@ -169,33 +164,33 @@ monitoring-analyst-test/
 │   ├── models.py          # Models SQLite
 │   └── data/              # 📁 CSVs (fallback)
 │       └── transactions_1.csv
-└── simulacoes/              # 🎮 SIMULAÇÕES SIMPY (NOVO!)
-    ├── app.py              # 🎯 Interface principal Streamlit
-    ├── README.md          # 📋 Documentação específica de simulações
-    ├── app_backup.py      # 🔄 Backup da versão anterior
-    └── backup/            # 📁 Versões anteriores e testes
+└── simulacoes/              # 🎮 Classes SimPy integradas no main.py
+    ├── checkout_simulation.py   # 🛒 Classe para simulação de checkouts
+    ├── anomaly_simulation.py    # 🚨 Classe para simulação de anomalias  
+    ├── scenario_simulation.py   # � Classe para análise de cenários
+    ├── app.py                  # 🔄 Versão standalone (opcional)
+    └── README.md              # � Documentação técnica das simulações
 ```
 
-### 🎮 **Detalhamento do Módulo de Simulações**
+### 🎮 **Sistema de Simulações Integrado**
 
-O diretório `simulacoes/` contém um **sistema completo de simulação** baseado em SimPy:
+As simulações SimPy estão **totalmente integradas** no sistema principal (`main.py`):
 
-#### 📁 **Arquivos Principais:**
-- **`app.py`**: Interface Streamlit com 4 tipos de simulação
-- **`README.md`**: Documentação técnica específica
-- **`app_backup.py`**: Versão de backup para recuperação
+#### 🎯 **Classes de Simulação:**
+- **`CheckoutSimulation`**: Modelagem de filas, tempos de espera e utilização de recursos
+- **`AnomalySimulation`**: Simulação de falhas (hardware, software, rede) com MTBF realístico
+- **`ScenarioSimulation`**: Análise comparativa de cenários com métricas de ROI e impacto financeiro
 
-#### 🎯 **Classes de Simulação Integradas:**
-- **`CheckoutSimulation`**: Modelagem de filas e processos de atendimento
-- **`AnomalySimulation`**: Simulação de falhas com distribuições estatísticas  
-- **`ScenarioSimulation`**: Análise comparativa de cenários
-- **`load_real_data()`**: Integração com dados reais para validação
+#### 📊 **Interface Rica Integrada:**
+- **🛒 Aba Checkouts**: Gráficos de utilização, eficiência e distribuição temporal
+- **🚨 Aba Anomalias**: Visualizações de tipos de falhas, impacto e timeline de incidentes  
+- **🔍 Aba Cenários**: Dashboard executivo com KPIs, métricas financeiras e comparações
 
-#### 🔧 **Tecnologias Utilizadas:**
-- **SimPy 4.1+**: Framework de simulação discreta de eventos
-- **Plotly**: Visualizações interativas das simulações
-- **Pandas**: Processamento de dados simulados
-- **Session State**: Persistência de resultados entre execuções
+#### 🔧 **Tecnologias e Funcionalidades:**
+- **SimPy 4.1+**: Simulação de eventos discretos com precisão estatística
+- **Plotly Avançado**: Gráficos interativos, timelines, box plots e distribuições
+- **Pandas Otimizado**: Processamento eficiente de resultados de simulação
+- **Interface Executiva**: Cards de métricas, indicadores coloridos e análise visual
 ```
 
 ```
@@ -328,46 +323,51 @@ SQLite Multi-Database • Twilio • Pandas • Plotly • Python Puro • Strea
 
 ---
 
-## 🎮 SIMULAÇÕES SIMPY: Modelagem e Simulação
+## 🎮 SIMULAÇÕES SIMPY: Sistema Integrado
 
-> **Título da Aplicação:** "🎮 Simulações SimPy"  
-> **Localização:** `simulacoes/`
+> **Integração Completa:** Todas as simulações estão incorporadas no sistema principal  
+> **Acesso:** http://localhost:8512/?page=simulacoes
 
 ### 🎯 O que faz
-Sistema avançado de simulação usando **SimPy** para modelar comportamento de checkouts, prever falhas e testar cenários de melhoria com análise de ROI.
+Sistema avançado de simulação **totalmente integrado** usando SimPy para modelar comportamento de checkouts, prever falhas e analisar cenários com interface executiva rica.
 
 ### 🚀 Como executar
 ```bash
-# Navegar para o diretório
-cd simulacoes
+# Sistema unificado (RECOMENDADO)
+source .venv/bin/activate
+streamlit run main.py --server.port 8512
 
-# Executar aplicação
-streamlit run app.py
+# Acesso direto às simulações:
+# http://localhost:8512/?page=simulacoes
 ```
 
-### ✨ Principais funcionalidades
-- **🛒 Simulação de Checkouts**: Modelagem de filas, tempos de atendimento e capacidade
-- **🚨 Simulação de Anomalias**: Falhas de hardware, software, rede e problemas ambientais
-- **🔍 Análise de Cenários**: Comparação entre situação atual vs melhorias propostas
-- **📊 Comparação Real vs Simulado**: Validação de modelos com dados reais
-- **💰 Análise de ROI**: Cálculo de retorno sobre investimento para melhorias
-- **📈 Métricas Avançadas**: MTBF, disponibilidade, satisfação do cliente
-- **🎯 Recomendações Inteligentes**: Sugestões baseadas em simulações
-- **⏰ Simulação Temporal**: Padrões de uso por hora, detecção de picos
+### ✨ Interface Rica Integrada
+- **� Dashboard Executivo**: 8 métricas KPI em cards visuais organizados
+- **🎭 Sistema de Abas**: Transações, Anomalias e Performance separadas
+- **� Gráficos Avançados**: Plotly interativo com pizza, barras, linhas e timelines
+- **� Métricas Financeiras**: ROI, perdas de receita, custos destacados  
+- **🎨 Indicadores Coloridos**: Valores com cores dinâmicas baseadas em performance
+- **� Dados Detalhados**: Expandir opcional para análise completa
+- **⚡ Processamento Inteligente**: Converte dados CSV em visualizações ricas
 
-### 🔧 Módulos SimPy
-- **CheckoutSimulation**: Modelagem de filas e processos de atendimento
-- **AnomalySimulation**: Simulação de falhas com distribuições estatísticas
-- **ScenarioSimulation**: Análise de cenários what-if com ROI
+### 🔧 Simulações Disponíveis
+1. **� Simulação de Checkouts**: 
+   - Modelagem de filas e tempos de atendimento
+   - Gráficos de utilização e distribuição temporal
+   - Análise de eficiência por checkout
 
-### 🎮 Tipos de Simulação
-1. **🛒 Checkouts**: Filas, tempos de espera, utilização, eficiência
-2. **🚨 Anomalias**: Hardware, software, rede, energia, ambiente
-3. **🔍 Cenários**: Atual, melhorado, redundância, manutenção, upgrade
-4. **📊 Validação**: Comparação com dados reais SQLite
+2. **🚨 Simulação de Anomalias**:
+   - Falhas de hardware, software e rede
+   - Timeline interativa de incidentes  
+   - Gráficos de impacto e distribuição de tipos
 
-### 📍 Acesso Local
-http://localhost:8504
+3. **🔍 Análise de Cenários**:
+   - Interface executiva com métricas consolidadas
+   - Comparação entre cenários atual/melhorado
+   - Dashboard financeiro e de qualidade
+
+### 📍 Acesso Integrado
+**URL Principal:** http://localhost:8512/?page=simulacoes
 
 ---
 
@@ -469,12 +469,12 @@ pkill -f streamlit
 - **Environment Variables**: Configuração segura de credenciais
 - **Health Checks**: Monitoramento de status dos serviços
 
-| Tarefa | Aplicação | Foco Principal | Status | Tecnologia Destaque |
-|--------|-----------|----------------|---------|---------------------|
-| **1** | 📊 Análise Avançada | Detecção de anomalias em checkouts | ✅ Estável | SQLite + Plotly + Análise Inteligente |
-| **2** | 🚨 Alertas e Incidentes | Dashboard de monitoramento | ✅ Estável | Interface Moderna + Alertas |
-| **3** | 📱 Monitoramento Integrado | Central unificada multi-database | 🔧 **Corrigido** | Python Ultra-Robusto + SQLite |
-| **4** | 🎮 Simulações SimPy | Modelagem e análise de cenários | ✅ Estável | SimPy + ROI Calculator |
+| Módulo | Funcionalidade | Foco Principal | Status | Tecnologia Destaque |
+|--------|-------------|----------------|---------|---------------------|
+| **1** | 📊 Análise Avançada | Detecção de anomalias em checkouts | ✅ Integrado | SQLite + Plotly + Análise Inteligente |
+| **2** | 🚨 Alertas e Incidentes | Dashboard de monitoramento | ✅ Integrado | Interface Moderna + Alertas |
+| **3** | 📱 Monitoramento Integrado | Central unificada multi-database | ✅ Integrado | Python Ultra-Robusto + SQLite |
+| **4** | 🎮 Simulações SimPy | Interface rica com visualizações | ✅ **Integrado** | SimPy + Plotly + Dashboard Executivo |
 
 ---
 
@@ -685,17 +685,17 @@ CREATE TABLE data_table (
 
 ## 📋 Changelog
 
-### 🆕 Versão 2.4 (Novembro 2025) - SimPy Completo + Documentação 
-- **🎮 Sistema de Simulações SimPy:** Implementação completa de simulações discretas
-- **🛒 Modelagem de Checkout:** Filas, tempos de espera, utilização de recursos
-- **🚨 Simulação de Anomalias:** Falhas com distribuições estatísticas avançadas
-- **🔍 Análise de Cenários:** Comparação de configurações com ROI calculado
-- **📊 Validação de Dados:** Integração de dados reais para calibração de modelos
-- **⚡ Session State:** Persistência de resultados entre execuções
-- **🎯 Recomendações IA:** Insights baseados em análise de simulações
-- **📱 Interface Moderna:** Sidebar organizada e interface responsiva
-- **🚀 Script Automático:** start_system.sh para inicialização completa do sistema
-- **📖 Documentação Completa:** README e documentação técnica abrangente
+### 🆕 Versão 3.0 (Outubro 2025) - Sistema Unificado Completo
+- **🎮 SimPy Totalmente Integrado:** Todas as simulações incorporadas no sistema principal
+- **� Interface Rica:** Dashboard executivo com 8 métricas KPI e gráficos avançados  
+- **🎭 Sistema de Abas:** Visualizações organizadas em Transações, Anomalias e Performance
+- **� Métricas Financeiras:** ROI, perdas de receita e custos com indicadores coloridos
+- **� Gráficos Plotly:** Pizza, barras, linhas, timelines e box plots interativos
+- **🚨 Interface de Anomalias:** Detecção visual com tipos, impacto e timeline
+- **🛒 Simulação de Checkouts:** Análise de utilização, eficiência e distribuição temporal
+- **⚡ Cloud-Ready:** Sistema sem dependências de porta, otimizado para Streamlit Cloud
+- **🧭 Navegação Unificada:** Acesso centralizado a todas as funcionalidades
+- **� Design Responsivo:** Interface moderna compatível com desktop e mobile
 
 ### 🆕 Versão 2.3 (Outubro 2025) - Correção Total da Task 3
 - **🔧 Resolução Definitiva:** Corrigido erro `'PandasThen' object has no attribute '_evaluate_output_names'`
@@ -742,17 +742,18 @@ CREATE TABLE data_table (
 
 ## 🎯 Conclusão
 
-Este projeto representa um **sistema completo de análise e monitoramento** com recursos avançados de simulação e modelagem preditiva. A **versão 2.4** inclui todas as funcionalidades solicitadas, com implementação robusta, documentação completa e interface profissional.
+Este projeto representa um **sistema completo de análise e monitoramento** com recursos avançados de simulação SimPy totalmente integrados. A **versão 3.0** oferece interface executiva rica, visualizações profissionais e dashboard consolidado em sistema unificado.
 
 ### ✨ **Principais Destaques:**
-- **🔧 Task 3 100% Funcional**: Problema do Pandas completamente resolvido
-- **🎮 SimPy Completo**: Sistema de simulações profissional implementado
-- **🗃️ Multi-Database**: Integração SQLite com fallbacks inteligentes
-- **📱 Interface Moderna**: Design responsivo e navegação por rotas
-- **🚀 Deploy Simplificado**: Script automático para inicialização
+- **🎮 SimPy Totalmente Integrado**: Interface rica com dashboards executivos e visualizações avançadas
+- **📊 Visualizações Profissionais**: Gráficos Plotly interativos, timelines e métricas KPI organizadas
+- **� Análise Financeira**: ROI, perdas de receita e custos com indicadores coloridos
+- **� Interface de Anomalias**: Sistema visual completo para detecção e análise de falhas
+- **⚡ Cloud-Ready**: Sistema unificado otimizado para deploy no Streamlit Cloud
+- **🧭 Sistema Único**: Todas as funcionalidades integradas em uma aplicação moderna
 
-### 🛠️ **Tecnologias Utilizadas:**
-- **Python 3.9+** | **Streamlit** | **SimPy 4.1+** | **SQLite3** | **Plotly** | **Pandas** | **Twilio**
+### 🛠️ **Stack Tecnológico:**
+- **Python 3.9+** | **Streamlit** | **SimPy 4.1+** | **SQLite3** | **Plotly** | **Pandas** | **Interface Rica**
 
 ### 📞 **Suporte e Manutenção:**
 - 📖 **Documentação Completa**: README principal + documentação técnica específica

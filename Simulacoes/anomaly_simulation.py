@@ -296,8 +296,7 @@ class AnomalySimulation:
         if self.anomaly_log:
             df = pd.DataFrame(self.anomaly_log)
             
-            # Adicionar colunas calculadas
-            df['impact_score'] = df.apply(self.calculate_impact_score, axis=1)
+            # Adicionar colunas calculadas (business_hours deve vir ANTES de impact_score)
             df['business_hours'] = df['start_hour'].apply(
                 lambda x: 1 if 9 <= x <= 18 else 0
             )
