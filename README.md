@@ -36,6 +36,7 @@ Sistema completo de análise de transações e monitoramento desenvolvido em Pyt
 # Ativar ambiente e executar sistema completo
 source .venv/bin/activate
 streamlit run main.py --server.port 8512
+# atalho source .venv/bin/activate && streamlit run main.py
 
 # Acesso: http://localhost:8512
 ```
