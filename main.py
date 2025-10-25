@@ -1109,10 +1109,17 @@ elif current_route == "simulacoes":
         import sys
         import os
         
-        # Adicionar o diretório de simulações ao path
-        simulacoes_path = os.path.join(os.getcwd(), 'simulacoes')
-        if simulacoes_path not in sys.path:
-            sys.path.append(simulacoes_path)
+        # Adicionar o diretório de simulações ao path (compatível case-sensitive)
+        simulacoes_path = os.path.join(os.getcwd(), 'Simulacoes')
+        simulacoes_path_lower = os.path.join(os.getcwd(), 'simulacoes')
+        
+        # Tentar ambos os caminhos para compatibilidade
+        if os.path.exists(simulacoes_path):
+            if simulacoes_path not in sys.path:
+                sys.path.append(simulacoes_path)
+        elif os.path.exists(simulacoes_path_lower):
+            if simulacoes_path_lower not in sys.path:
+                sys.path.append(simulacoes_path_lower)
         
         # Importar classes de simulação
         from checkout_simulation import CheckoutSimulation
